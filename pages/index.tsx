@@ -82,6 +82,7 @@ const Home: NextPage = () => {
 					</button>
 				</form>
 				<ChromePicker
+					className={styles.color}
 					color={place.current?.color ?? '#000000'}
 					onChangeComplete={onColorChange}
 				/>

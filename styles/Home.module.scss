@@ -9,6 +9,7 @@ $dark: #292d3e;
 	top: 0;
 	left: 0;
 	right: 0;
+	height: 62px;
 	padding: 16px 20px;
 	background: transparentize($dark, 0.0);
 }
@@ -26,6 +27,7 @@ $dark: #292d3e;
 .nameForm {
 	display: flex;
 	height: 30px;
+	margin-right: auto;
 	overflow: hidden;
 	border-radius: 8px;
 }
@@ -54,8 +56,10 @@ $dark: #292d3e;
 	}
 }
 
+.color {
+	align-self: flex-start;
+}
+
 .canvas {
-	$cursor-size: 10;
-	
-	cursor: url('../images/cursor.svg') $cursor-size $cursor-size, auto;
+	cursor: none;
 }

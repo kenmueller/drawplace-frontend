@@ -63,7 +63,7 @@ export default class Place {
 			this.refresh(() => {
 				if (!this.isDrawing)
 					return
-				console.log(this.user.color)
+				
 				const line: Line = {
 					from: oldCursor,
 					to: this.user.cursor,
@@ -100,7 +100,7 @@ export default class Place {
 		this.drawLines()
 		fn?.()
 		this.drawUsers()
-		this.drawText(this.user)
+		this.drawUser(this.user)
 	}
 	
 	changeName = (name: string) => {
@@ -139,11 +139,13 @@ export default class Place {
 		this.context.fillText(user.message ?? user.name, x, y - 20)
 	}
 	
+	private drawUser = (user: User) => {
+		this.drawCursor(user)
+		this.drawText(user)
+	}
+	
 	private drawUsers = () => {
-		for (const user of this.users) {
-			this.drawCursor(user)
-			this.drawText(user)
-		}
+		this.users.forEach(this.drawUser)
 	}
 	
 	private drawLine = ({ from, to, color }: Line) => {
