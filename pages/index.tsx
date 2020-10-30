@@ -3,6 +3,7 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 
 import Place from 'models/Place'
+import useUpdate from 'hooks/useUpdate'
 import useWindowSize from 'hooks/useWindowSize'
 
 import styles from 'styles/Home.module.scss'
@@ -13,6 +14,7 @@ const Home: NextPage = () => {
 	const [name, setName] = useState('')
 	const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
 	
+	const update = useUpdate()
 	const size = useWindowSize()
 	
 	const onNameInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -22,9 +24,12 @@ const Home: NextPage = () => {
 	const onNameSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 		
-		if (place.current)
-			place.current.changeName(name)
-	}, [place, name])
+		if (place.current?.isName(name) ?? true)
+			return
+		
+		place.current.changeName(name)
+		update()
+	}, [place, name, update])
 	
 	useEffect(() => {
 		if (!canvas)
