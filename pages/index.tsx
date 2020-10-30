@@ -7,7 +7,7 @@ import cx from 'classnames'
 import Place from 'models/Place'
 import Message from 'models/Message'
 import User from 'models/User'
-import { getZeroCoordinate } from 'models/Coordinate'
+import Coordinate from 'models/Coordinate'
 import useUpdate from 'hooks/useUpdate'
 import useWindowSize from 'hooks/useWindowSize'
 
@@ -24,9 +24,8 @@ const Home: NextPage = () => {
 	const [messages, setMessages] = useState<Message[]>([])
 	const [user, setUser] = useState<User | null>(null)
 	const [users, setUsers] = useState<User[]>([])
-	const [location, setLocation] = useState(getZeroCoordinate())
-	const [locationX, setLocationX] = useState(location.x)
-	const [locationY, setLocationY] = useState(location.y)
+	const [locationX, setLocationX] = useState(0)
+	const [locationY, setLocationY] = useState(0)
 	const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
 	
 	const update = useUpdate()
@@ -65,8 +64,15 @@ const Home: NextPage = () => {
 	
 	const onLocationSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
-		console.log(location, { x: locationX, y: locationY })
-	}, [location, locationX, locationY])
+		
+		const location: Coordinate = { x: locationX, y: locationY }
+		
+		if (place.current?.isLocation(location) ?? true)
+			return
+		
+		place.current.changeLocation(location)
+		update()
+	}, [locationX, locationY, place, update])
 	
 	const onLocationChange = useCallback((
 		event: ChangeEvent<HTMLInputElement>,
@@ -123,13 +129,13 @@ const Home: NextPage = () => {
 		}
 		place.current.setUsers = setUsers
 		
-		place.current.setLocation = location => {
-			setLocation(location)
-			update()
+		place.current.setLocation = ({ x, y }) => {
+			setLocationX(x)
+			setLocationY(y)
 		}
 		
 		return place.current.stop
-	}, [canvas, place, setName, setMessages, setUser, setUsers, setLocation, update])
+	}, [canvas, place, setName, setMessages, setUser, setUsers, setLocationX, setLocationY, update])
 	
 	useEffect(() => {
 		place.current?.refresh()
@@ -200,7 +206,7 @@ const Home: NextPage = () => {
 					</div>
 					<button
 						className={styles.locationSubmit}
-						disabled={location.x === locationX && location.y === locationY}
+						disabled={place.current?.isLocation({ x: locationX, y: locationY }) ?? true}
 					>
 						go
 					</button>

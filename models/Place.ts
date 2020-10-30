@@ -3,7 +3,7 @@ import IO from 'socket.io-client'
 import User, { getInitialUser } from './User'
 import Line from './Line'
 import Message, { JoinMessage } from './Message'
-import Coordinate, { addCoordinates, isZeroCoordinate, getZeroCoordinate } from './Coordinate'
+import Coordinate, { addCoordinates, isZeroCoordinate, getZeroCoordinate, areCoordinatesEqual } from './Coordinate'
 import MouseEventCallback from './MouseEventCallback'
 import KeyboardEventCallback from './KeyboardEventCallback'
 
@@ -92,6 +92,9 @@ export default class Place {
 	isName = (name: string) =>
 		this.user.name === name
 	
+	isLocation = (location: Coordinate) =>
+		areCoordinatesEqual(this.location, location)
+	
 	get color() {
 		return this.user.color
 	}
@@ -111,6 +114,11 @@ export default class Place {
 			color: this.user.color,
 			body
 		}
+	}
+	
+	changeLocation = (location: Coordinate) => {
+		this.location = location
+		console.log(location)
 	}
 	
 	private addMouseEventListeners = () => {
@@ -211,7 +219,6 @@ export default class Place {
 		if (!isZeroCoordinate(this.movement)) {
 			addCoordinates(this.location, this.movement)
 			this.setLocation?.(this.location)
-			console.log(this.location)
 		}
 		
 		requestAnimationFrame(this.onMovementTick)

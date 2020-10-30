@@ -11,6 +11,9 @@ export const getZeroCoordinate = (): Coordinate => ({
 export const isZeroCoordinate = ({ x, y }: Coordinate) =>
 	!(x || y)
 
+export const areCoordinatesEqual = (a: Coordinate, b: Coordinate) =>
+	a.x === b.x && a.y === b.y
+
 export const addCoordinates = (a: Coordinate, b: Coordinate) => {
 	a.x += b.x
 	a.y += b.y
