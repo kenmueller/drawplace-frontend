@@ -6,8 +6,6 @@ export default class Place {
 	private context: CanvasRenderingContext2D
 	
 	private io?: SocketIOClient.Socket
-	private cursors?: Cursor[]
-	
 	private onMouseMoveCallback?: (event: MouseEvent) => void
 	
 	constructor(private canvas: HTMLCanvasElement) {
@@ -15,18 +13,12 @@ export default class Place {
 		this.io = IO(process.env.NEXT_PUBLIC_API_BASE_URL)
 		
 		this.io.on('cursors', (cursors: Cursor[]) => {
-			this.cursors = cursors
+			this.clear()
+			cursors.forEach(this.drawCursor)
 		})
 		
 		this.onMouseMoveCallback = ({ clientX: x, clientY: y }) => {
-			const cursor: Cursor = { x, y }
-			
-			this.clear()
-			
-			this.drawCursor(cursor)
-			this.cursors?.forEach(this.drawCursor)
-			
-			this.io.emit('cursor', cursor)
+			this.io.emit('cursor', { x, y })
 		}
 		
 		this.canvas.addEventListener('mousemove', this.onMouseMoveCallback)
