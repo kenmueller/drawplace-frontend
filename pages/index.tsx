@@ -24,7 +24,7 @@ const Home: NextPage = () => {
 	return (
 		<>
 			<Head>
-				<link key="api-preconnect" rel="preconnect" href="http://api.draw.place" />
+				<link key="api-preconnect" rel="preconnect" href={process.env.NEXT_PUBLIC_API_BASE_URL} />
 				<title key="title">drawplace</title>
 			</Head>
 			<h1 className={styles.title}>
