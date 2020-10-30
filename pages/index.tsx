@@ -1,14 +1,31 @@
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
 
-import styles from 'styles/Home.module.scss'
+import Place from 'models/Place'
+import useWindowSize from 'hooks/useWindowSize'
 
-const Home = () => (
-	<div className={styles.root}>
-		<Head>
-			<title>Next.js</title>
-		</Head>
-		<h1>If you see this, your Next.js app is working!</h1>
-	</div>
-)
+const Home = () => {
+	const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+	const size = useWindowSize()
+	
+	useEffect(() => {
+		if (!canvas)
+			return
+		
+		const place = new Place(canvas)
+		place.start()
+		
+		return place.stop
+	}, [canvas])
+	
+	return (
+		<>
+			<Head>
+				<title key="title">drawplace</title>
+			</Head>
+			{size && <canvas ref={setCanvas} {...size} />}
+		</>
+	)
+}
 
 export default Home
