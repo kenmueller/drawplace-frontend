@@ -6,10 +6,12 @@ import cx from 'classnames'
 
 import Place from 'models/Place'
 import Message from 'models/Message'
+import User from 'models/User'
 import useUpdate from 'hooks/useUpdate'
 import useWindowSize from 'hooks/useWindowSize'
 
 import styles from 'styles/Home.module.scss'
+import Cursor from 'components/Cursor'
 
 const Home: NextPage = () => {
 	const place = useRef<Place | null>(null)
@@ -19,6 +21,8 @@ const Home: NextPage = () => {
 	const [name, setName] = useState('')
 	const [message, setMessage] = useState('')
 	const [messages, setMessages] = useState<Message[]>([])
+	const [user, setUser] = useState<User | null>(null)
+	const [users, setUsers] = useState<User[]>([])
 	const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
 	
 	const update = useUpdate()
@@ -79,17 +83,24 @@ const Home: NextPage = () => {
 			return
 		
 		place.current = new Place(canvas)
+		
 		place.current.setName = setName
+		
 		place.current.setMessages = setMessages
 		place.current.addMessage = message =>
 			setMessages(messages => [...messages, message])
 		
+		place.current.setUser = user => {
+			setUser(user)
+			update()
+		}
+		place.current.setUsers = setUsers
+		
 		return place.current.stop
-	}, [canvas, place, setName, setMessages])
+	}, [canvas, place, setName, setMessages, setUser, setUsers, update])
 	
 	useEffect(() => {
-		if (place.current)
-			place.current.refresh()
+		place.current?.refresh()
 	}, [place, size])
 	
 	useEffect(() => {
@@ -170,6 +181,8 @@ const Home: NextPage = () => {
 				</div>
 			</nav>
 			{size && <canvas className={styles.canvas} ref={setCanvas} {...size} />}
+			{user && <Cursor user={user} />}
+			{users.map(user => <Cursor key={user.id} user={user} />)}
 		</>
 	)
 }
