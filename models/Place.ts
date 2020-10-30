@@ -63,10 +63,11 @@ export default class Place {
 			this.refresh(() => {
 				if (!this.isDrawing)
 					return
-				
+				console.log(this.user.color)
 				const line: Line = {
 					from: oldCursor,
-					to: this.user.cursor
+					to: this.user.cursor,
+					color: this.user.color
 				}
 				
 				this.drawLine(line)
@@ -110,30 +111,43 @@ export default class Place {
 	isName = (name: string) =>
 		this.user.name === name
 	
+	get color() {
+		return this.user.color
+	}
+	
+	changeColor = (color: string) => {
+		this.io.emit('color', this.user.color = color)
+		this.refresh()
+	}
+	
 	private clear = () => {
 		const { width, height } = this.canvas
 		this.context.clearRect(0, 0, width, height)
 	}
 	
-	private drawCursor = ({ x, y }: Coordinate) => {
+	private drawCursor = ({ cursor, color }: User) => {
+		this.context.fillStyle = color
 		this.context.beginPath()
-		this.context.arc(x, y, 5, 0, 2 * Math.PI)
+		this.context.arc(cursor.x, cursor.y, 5, 0, 2 * Math.PI)
 		this.context.fill()
 	}
 	
 	private drawText = (user: User) => {
 		const { x, y } = user.cursor
+		
+		this.context.fillStyle = user.color
 		this.context.fillText(user.message ?? user.name, x, y - 20)
 	}
 	
 	private drawUsers = () => {
 		for (const user of this.users) {
-			this.drawCursor(user.cursor)
+			this.drawCursor(user)
 			this.drawText(user)
 		}
 	}
 	
-	private drawLine = ({ from, to }: Line) => {
+	private drawLine = ({ from, to, color }: Line) => {
+		this.context.strokeStyle = color
 		this.context.beginPath()
 		this.context.moveTo(from.x, from.y)
 		this.context.lineTo(to.x, to.y)

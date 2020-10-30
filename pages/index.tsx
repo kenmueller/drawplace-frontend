@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect, ChangeEvent, FormEvent } from 'react'
 import { NextPage } from 'next'
 import Head from 'next/head'
+import { ColorChangeHandler, ChromePicker } from 'react-color'
 
 import Place from 'models/Place'
 import useUpdate from 'hooks/useUpdate'
@@ -30,6 +31,14 @@ const Home: NextPage = () => {
 		place.current.changeName(name)
 		update()
 	}, [place, name, update])
+	
+	const onColorChange: ColorChangeHandler = useCallback(({ hex }) => {
+		if (!place.current || place.current.color === hex)
+			return
+		
+		place.current.changeColor(hex)
+		update()
+	}, [place, update])
 	
 	useEffect(() => {
 		if (!canvas)
@@ -72,6 +81,10 @@ const Home: NextPage = () => {
 						save
 					</button>
 				</form>
+				<ChromePicker
+					color={place.current?.color ?? 'black'}
+					onChangeComplete={onColorChange}
+				/>
 			</nav>
 			{size && <canvas className={styles.canvas} ref={setCanvas} {...size} />}
 		</>
