@@ -2,6 +2,7 @@ import { useRef, useState, useCallback, useEffect, ChangeEvent, FormEvent } from
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { ColorChangeHandler, ChromePicker } from 'react-color'
+import cx from 'classnames'
 
 import Place from 'models/Place'
 import Message from 'models/Message'
@@ -134,9 +135,22 @@ const Home: NextPage = () => {
 				/>
 				<div className={styles.chat}>
 					<div className={styles.messages} ref={messagesRef}>
-						{messages.map(({ name, color, body }, i) => (
-							<p key={i} className={styles.message} style={{ color }}>
-								<b>{name}:</b> {body}
+						{messages.map((message, i) => (
+							<p
+								key={i}
+								className={cx(styles.message, {
+									[styles.joinMessage]: message.type === 'join'
+								})}
+								style={{
+									color: message.type === 'user'
+										? message.color
+										: undefined
+								}}
+							>
+								{message.type === 'user'
+									? <><b>{message.name}:</b> {message.body}</>
+									: <><b>{message.name}</b> joined</>
+								}
 							</p>
 						))}
 					</div>

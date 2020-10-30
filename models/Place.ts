@@ -135,6 +135,7 @@ export default class Place {
 		this.io.emit('message', body)
 		
 		return {
+			type: 'user',
 			name: this.user.name,
 			color: this.user.color,
 			body
