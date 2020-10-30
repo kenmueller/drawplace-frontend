@@ -3,7 +3,7 @@ import IO from 'socket.io-client'
 import User, { getInitialUser } from './User'
 import Line from './Line'
 import Message, { JoinMessage } from './Message'
-import Coordinate, { addCoordinates, isZeroCoordinate, getZeroCoordinate, areCoordinatesEqual, areCoordinatesInOrder } from './Coordinate'
+import Coordinate, { addCoordinates, subtractCoordinates, isZeroCoordinate, getZeroCoordinate, areCoordinatesEqual, areCoordinatesInOrder } from './Coordinate'
 import Bounds from './Bounds'
 import MouseEventCallback from './MouseEventCallback'
 import KeyboardEventCallback from './KeyboardEventCallback'
@@ -131,6 +131,10 @@ export default class Place {
 	}
 	
 	changeLocation = (location: Coordinate) => {
+		this.user.cursor = addCoordinates(
+			this.user.cursor,
+			subtractCoordinates(location, this.location)
+		)
 		this.location = location
 		this.refresh()
 	}
@@ -231,6 +235,7 @@ export default class Place {
 	
 	private onMovementTick = () => {
 		if (!isZeroCoordinate(this.movement)) {
+			this.user.cursor = addCoordinates(this.user.cursor, this.movement)
 			this.location = addCoordinates(this.location, this.movement)
 			this.refresh()
 			this.setLocation?.(this.location)

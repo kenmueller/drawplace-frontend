@@ -14,7 +14,7 @@ import useWindowSize from 'hooks/useWindowSize'
 
 import styles from 'styles/Home.module.scss'
 import Cursor from 'components/Cursor'
-
+let i = 0
 const Home: NextPage = () => {
 	const place = useRef<Place | null>(null)
 	const messagesRef = useRef<HTMLDivElement | null>(null)

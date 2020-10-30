@@ -21,3 +21,8 @@ export const addCoordinates = (a: Coordinate, b: Coordinate): Coordinate => ({
 	x: a.x + b.x,
 	y: a.y + b.y
 })
+
+export const subtractCoordinates = (a: Coordinate, b: Coordinate): Coordinate => ({
+	x: a.x - b.x,
+	y: a.y - b.y
+})
