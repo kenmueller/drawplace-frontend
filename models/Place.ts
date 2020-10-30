@@ -12,9 +12,6 @@ export default class Place {
 	
 	constructor(private canvas: HTMLCanvasElement) {
 		this.context = canvas.getContext('2d')
-	}
-	
-	start = () => {
 		this.io = IO(process.env.NEXT_PUBLIC_API_BASE_URL)
 		
 		this.io.on('cursors', (cursors: Cursor[]) => {

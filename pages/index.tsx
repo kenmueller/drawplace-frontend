@@ -11,15 +11,9 @@ const Home: NextPage = () => {
 	const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
 	const size = useWindowSize()
 	
-	useEffect(() => {
-		if (!canvas)
-			return
-		
-		const place = new Place(canvas)
-		place.start()
-		
-		return place.stop
-	}, [canvas])
+	useEffect(() => (
+		canvas ? new Place(canvas).stop : undefined
+	), [canvas])
 	
 	return (
 		<>
