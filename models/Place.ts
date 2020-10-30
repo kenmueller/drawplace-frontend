@@ -2,7 +2,7 @@ import IO from 'socket.io-client'
 
 import User, { getInitialUser } from './User'
 import Line from './Line'
-import Message from './Message'
+import Message, { JoinMessage } from './Message'
 import Coordinate from './Coordinate'
 import MouseEventCallback from './MouseEventCallback'
 
@@ -14,6 +14,8 @@ export default class Place {
 	private context: CanvasRenderingContext2D
 	private io?: SocketIOClient.Socket
 	private isDrawing: boolean = false
+	private didLoadMessages: boolean = false
+	private pendingJoinMessage?: JoinMessage
 	private user: User = getInitialUser()
 	private users: User[] = []
 	private lines: Line[] = []
@@ -32,6 +34,7 @@ export default class Place {
 		this.io.on('name', (name: string) => {
 			this.user.name = name
 			this.setName?.(name)
+			this.addJoinMessage()
 			this.refresh()
 		})
 		
@@ -51,7 +54,11 @@ export default class Place {
 		})
 		
 		this.io.on('messages', (messages: Message[]) => {
+			this.didLoadMessages = true
 			this.setMessages?.(messages)
+			
+			if (this.pendingJoinMessage)
+				this.addMessage?.(this.pendingJoinMessage)
 		})
 		
 		this.io.on('message', (message: Message) => {
@@ -180,5 +187,17 @@ export default class Place {
 	
 	private drawLines = () => {
 		this.lines.forEach(this.drawLine)
+	}
+	
+	private addJoinMessage = () => {
+		const message: JoinMessage = {
+			type: 'join',
+			name: this.user.name
+		}
+		
+		if (this.didLoadMessages)
+			this.addMessage?.(message)
+		else
+			this.pendingJoinMessage = message
 	}
 }
