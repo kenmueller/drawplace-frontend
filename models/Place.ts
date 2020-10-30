@@ -185,12 +185,18 @@ export default class Place {
 	private addMovementEventListeners = () => {
 		document.addEventListener(
 			'keydown',
-			this.onKeyDown = ({ repeat, key }) => repeat || this.modifyMovement(key, true)
+			this.onKeyDown = ({ repeat, key }) =>
+				repeat ||
+				document.activeElement instanceof HTMLInputElement ||
+				this.modifyMovement(key, true)
 		)
 		
 		document.addEventListener(
 			'keyup',
-			this.onKeyUp = ({ repeat, key }) => repeat || this.modifyMovement(key, false)
+			this.onKeyUp = ({ repeat, key }) =>
+				repeat ||
+				document.activeElement instanceof HTMLInputElement ||
+				this.modifyMovement(key, false)
 		)
 		
 		requestAnimationFrame(this.onMovementTick)
