@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect, ChangeEvent } from 'react'
+import { useRef, useState, useCallback, useEffect, ChangeEvent, FormEvent } from 'react'
 import { NextPage } from 'next'
 import Head from 'next/head'
 
@@ -18,6 +18,13 @@ const Home: NextPage = () => {
 	const onNameInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
 		setName(event.target.value)
 	}, [setName])
+	
+	const onNameSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault()
+		
+		if (place.current)
+			place.current.changeName(name)
+	}, [place, name])
 	
 	useEffect(() => {
 		if (!canvas)
@@ -45,10 +52,11 @@ const Home: NextPage = () => {
 					draw
 					<span className={styles.titleEmphasized}>place</span>
 				</h1>
-				<form className={styles.nameForm}>
+				<form className={styles.nameForm} onSubmit={onNameSubmit}>
 					<input
 						className={styles.nameInput}
 						required
+						placeholder="username"
 						value={name}
 						onChange={onNameInputChange}
 					/>
