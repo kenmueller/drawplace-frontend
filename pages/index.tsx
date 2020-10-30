@@ -107,10 +107,14 @@ const Home: NextPage = () => {
 	}, [place, update])
 	
 	const onKeyDown = useCallback((event: KeyboardEvent) => {
-		if (
-			document.activeElement instanceof HTMLInputElement ||
-			!(messageInput.current && event.key.toLowerCase() === 't')
-		)
+		if (document.activeElement instanceof HTMLInputElement) {
+			if (event.key === 'Escape')
+				document.activeElement.blur()
+			
+			return
+		}
+		
+		if (!(messageInput.current && event.key.toLowerCase() === 't'))
 			return
 		
 		event.preventDefault()
