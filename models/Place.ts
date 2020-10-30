@@ -13,6 +13,7 @@ export default class Place {
 	addMessage?(message: Message): void
 	setUser?(user: User): void
 	setUsers?(users: User[]): void
+	setLocation?(location: Coordinate): void
 	
 	private context: CanvasRenderingContext2D
 	private io?: SocketIOClient.Socket
@@ -203,6 +204,7 @@ export default class Place {
 	private onMovementTick = () => {
 		if (!isZeroCoordinate(this.movement)) {
 			addCoordinates(this.location, this.movement)
+			this.setLocation?.(this.location)
 			console.log(this.location)
 		}
 		

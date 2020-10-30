@@ -7,6 +7,7 @@ import cx from 'classnames'
 import Place from 'models/Place'
 import Message from 'models/Message'
 import User from 'models/User'
+import { getZeroCoordinate } from 'models/Coordinate'
 import useUpdate from 'hooks/useUpdate'
 import useWindowSize from 'hooks/useWindowSize'
 
@@ -23,6 +24,7 @@ const Home: NextPage = () => {
 	const [messages, setMessages] = useState<Message[]>([])
 	const [user, setUser] = useState<User | null>(null)
 	const [users, setUsers] = useState<User[]>([])
+	const [location, setLocation] = useState(getZeroCoordinate())
 	const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
 	
 	const update = useUpdate()
@@ -96,8 +98,13 @@ const Home: NextPage = () => {
 		}
 		place.current.setUsers = setUsers
 		
+		place.current.setLocation = location => {
+			setLocation(location)
+			update()
+		}
+		
 		return place.current.stop
-	}, [canvas, place, setName, setMessages, setUser, setUsers, update])
+	}, [canvas, place, setName, setMessages, setUser, setUsers, setLocation, update])
 	
 	useEffect(() => {
 		place.current?.refresh()
@@ -138,6 +145,32 @@ const Home: NextPage = () => {
 					>
 						save
 					</button>
+				</form>
+				<form className={styles.locationForm}>
+					<div className={styles.location}>
+						<label className={styles.locationLabel} htmlFor="location-x-input">
+							x
+						</label>
+						<input
+							className={styles.locationInput}
+							id="location-x-input"
+							required
+							type="number"
+							value={location.x}
+						/>
+					</div>
+					<div className={styles.location}>
+						<label className={styles.locationLabel} htmlFor="location-y-input">
+							y
+						</label>
+						<input
+							className={styles.locationInput}
+							id="location-y-input"
+							required
+							type="number"
+							value={location.y}
+						/>
+					</div>
 				</form>
 				<ChromePicker
 					className={styles.color}
