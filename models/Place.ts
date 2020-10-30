@@ -9,6 +9,7 @@ export default class Place {
 	private io?: SocketIOClient.Socket
 	private cursor?: Coordinate
 	private isDrawing = false
+	private cursors: Coordinate[] = []
 	private lines: Line[] = []
 	
 	private onMouseDown?: MouseEventCallback
@@ -20,9 +21,8 @@ export default class Place {
 		this.io = IO(process.env.NEXT_PUBLIC_API_BASE_URL)
 		
 		this.io.on('cursors', (cursors: Coordinate[]) => {
-			this.clear()
-			this.drawLines()
-			this.drawCursors(cursors)
+			this.cursors = cursors
+			this.refresh()
 		})
 		
 		this.io.on('lines', (lines: Line[]) => {
@@ -72,6 +72,12 @@ export default class Place {
 		this.canvas.removeEventListener('mouseup', this.onMouseUp)
 	}
 	
+	refresh = () => {
+		this.clear()
+		this.drawLines()
+		this.drawCursors()
+	}
+	
 	private clear = () => {
 		const { width, height } = this.canvas
 		this.context.clearRect(0, 0, width, height)
@@ -83,8 +89,8 @@ export default class Place {
 		this.context.fill()
 	}
 	
-	private drawCursors = (cursors: Coordinate[]) => {
-		cursors.forEach(this.drawCursor)
+	private drawCursors = () => {
+		this.cursors.forEach(this.drawCursor)
 	}
 	
 	private drawLine = ({ from, to }: Line) => {
