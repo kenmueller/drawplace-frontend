@@ -82,7 +82,7 @@ const Home: NextPage = () => {
 					</button>
 				</form>
 				<ChromePicker
-					color={place.current?.color ?? 'black'}
+					color={place.current?.color ?? '#000000'}
 					onChangeComplete={onColorChange}
 				/>
 			</nav>
