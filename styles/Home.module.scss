@@ -57,6 +57,28 @@ $dark: #292d3e;
 	}
 }
 
+.movement {
+	position: relative;
+	margin-right: 20px;
+	padding: 0 8px;
+	line-height: 30px;
+	color: white;
+	background: transparentize(white, 0.9);
+	font-weight: 900;
+	border-radius: 8px;
+}
+
+.movementIndicator {
+	position: absolute;
+	top: 0;
+	left: -6px;
+	white-space: nowrap;
+	line-height: normal;
+	font-size: 12px;
+	font-weight: bold;
+	transform: translateY(-50%);
+}
+
 .locationForm {
 	display: flex;
 	height: 30px;

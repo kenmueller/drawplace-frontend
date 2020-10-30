@@ -183,6 +183,10 @@ const Home: NextPage = () => {
 						save
 					</button>
 				</form>
+				<p className={styles.movement}>
+					<span className={styles.movementIndicator}>move with</span>
+					W A S D
+				</p>
 				<form className={styles.locationForm} onSubmit={onLocationSubmit}>
 					<div className={styles.location}>
 						<label className={styles.locationLabel} htmlFor="location-x-input">
