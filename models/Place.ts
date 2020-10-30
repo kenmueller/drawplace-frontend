@@ -102,6 +102,11 @@ export default class Place {
 		this.drawText(this.user)
 	}
 	
+	changeName = (name: string) => {
+		this.io.emit('name', this.user.name = name)
+		this.refresh()
+	}
+	
 	isName = (name: string) =>
 		this.user.name === name
 	
