@@ -1,16 +1,61 @@
-.title {
+$pink: #f85ea1;
+$blue: #1486e7;
+$dark: #292d3e;
+
+.navbar {
+	display: flex;
 	position: absolute;
-	top: 16px;
-	left: 20px;
+	align-items: center;
+	top: 0;
+	left: 0;
+	right: 0;
+	padding: 16px 20px;
+	background: transparentize($dark, 0.0);
+}
+
+.title {
+	margin-right: 20px;
 	font-weight: 900;
-	color: #f85ea1;
-	pointer-events: none;
+	color: $pink;
 }
 
 .titleEmphasized {
-	color: #1486e7;
+	color: $blue;
+}
+
+.nameForm {
+	display: flex;
+	height: 30px;
+	overflow: hidden;
+	border-radius: 8px;
+}
+
+.nameInput {
+	padding: 0 8px;
+	font-size: 14px;
+	background: white;
+}
+
+.nameSubmit {
+	padding: 0 8px;
+	font-size: 14px;
+	font-weight: 900;
+	color: white;
+	background: $blue;
+	transition: color 0.3s, background 0.3s, opacity 0.3s;
+	
+	&:disabled {
+		opacity: 0.8;
+	}
+	
+	&:not(:disabled):hover {
+		color: $blue;
+		background: white;
+	}
 }
 
 .canvas {
-	cursor: url('../images/cursor.svg') 10 10, auto;
+	$cursor-size: 10;
+	
+	cursor: url('../images/cursor.svg') $cursor-size $cursor-size, auto;
 }

@@ -6,8 +6,17 @@
 	padding: 0;
 	font-family: Muli, Arial, Helvetica, sans-serif;
 	border: none;
+	outline: none;
 }
 
 body {
 	overflow: hidden;
+}
+
+button {
+	cursor: pointer;
+	
+	&:disabled {
+		cursor: default;
+	}
 }
