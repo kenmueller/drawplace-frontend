@@ -5,6 +5,7 @@ import Line from './Line'
 import Message, { JoinMessage } from './Message'
 import Coordinate from './Coordinate'
 import MouseEventCallback from './MouseEventCallback'
+import KeyboardEventCallback from './KeyboardEventCallback'
 
 export default class Place {
 	setName?(name: string): void
@@ -20,10 +21,14 @@ export default class Place {
 	private pendingJoinMessage?: JoinMessage
 	private user: User = getInitialUser()
 	private lines: Line[] = []
+	private movement: Coordinate = { x: 0, y: 0 }
 	
 	private onMouseDown?: MouseEventCallback
 	private onMouseMove?: MouseEventCallback
 	private onMouseUp?: MouseEventCallback
+	
+	private onKeyDown?: KeyboardEventCallback
+	private onKeyUp?: KeyboardEventCallback
 	
 	constructor(private canvas: HTMLCanvasElement) {
 		this.context = canvas.getContext('2d')
@@ -61,49 +66,14 @@ export default class Place {
 			this.addMessage?.(message)
 		})
 		
-		this.onMouseDown = ({ offsetX: x, offsetY: y }) => {
-			this.onCursorMove({ x, y })
-			this.isDrawing = true
-		}
-		
-		this.onMouseMove = ({ offsetX: x, offsetY: y }) => {
-			const oldCursor: Coordinate = {
-				x: this.user.cursor.x,
-				y: this.user.cursor.y
-			}
-			
-			this.onCursorMove({ x, y })
-			
-			if (this.isDrawing) {
-				const line: Line = {
-					from: oldCursor,
-					to: this.user.cursor,
-					color: this.user.color
-				}
-				
-				this.drawLine(line)
-				this.lines.push(line)
-				this.io.emit('line', line)
-			}
-			
-			this.io.emit('cursor', this.user.cursor)
-		}
-		
-		this.onMouseUp = ({ offsetX: x, offsetY: y }) => {
-			this.onCursorMove({ x, y })
-			this.isDrawing = false
-		}
-		
-		this.canvas.addEventListener('mousedown', this.onMouseDown)
-		this.canvas.addEventListener('mousemove', this.onMouseMove)
-		this.canvas.addEventListener('mouseup', this.onMouseUp)
+		this.addMouseEventListeners()
+		this.addMovementEventListeners()
 	}
 	
 	stop = () => {
 		this.io?.close()
-		this.canvas.removeEventListener('mousedown', this.onMouseDown)
-		this.canvas.removeEventListener('mousemove', this.onMouseMove)
-		this.canvas.removeEventListener('mouseup', this.onMouseUp)
+		this.removeMouseEventListeners()
+		this.removeMovementEventListeners()
 	}
 	
 	refresh = () => {
@@ -139,6 +109,94 @@ export default class Place {
 			color: this.user.color,
 			body
 		}
+	}
+	
+	private addMouseEventListeners = () => {
+		this.canvas.addEventListener(
+			'mousedown',
+			this.onMouseDown = ({ offsetX: x, offsetY: y }) => {
+				this.onCursorMove({ x, y })
+				this.isDrawing = true
+			}
+		)
+		
+		this.canvas.addEventListener(
+			'mousemove',
+			this.onMouseMove = ({ offsetX: x, offsetY: y }) => {
+				const oldCursor: Coordinate = {
+					x: this.user.cursor.x,
+					y: this.user.cursor.y
+				}
+				
+				this.onCursorMove({ x, y })
+				
+				if (this.isDrawing) {
+					const line: Line = {
+						from: oldCursor,
+						to: this.user.cursor,
+						color: this.user.color
+					}
+					
+					this.drawLine(line)
+					this.lines.push(line)
+					this.io.emit('line', line)
+				}
+				
+				this.io.emit('cursor', this.user.cursor)
+			}
+		)
+		
+		this.canvas.addEventListener(
+			'mouseup',
+			this.onMouseUp = ({ offsetX: x, offsetY: y }) => {
+				this.onCursorMove({ x, y })
+				this.isDrawing = false
+			}
+		)
+	}
+	
+	private removeMouseEventListeners = () => {
+		this.canvas.removeEventListener('mousedown', this.onMouseDown)
+		this.canvas.removeEventListener('mousemove', this.onMouseMove)
+		this.canvas.removeEventListener('mouseup', this.onMouseUp)
+	}
+	
+	private modifyMovement = (key: string, down: boolean) => {
+		const delta = down ? 1 : -1
+		
+		switch (key.toLowerCase()) {
+			case 'w':
+				this.movement.y -= delta
+				break
+			case 'a':
+				this.movement.x -= delta
+				break
+			case 's':
+				this.movement.y += delta
+				break
+			case 'd':
+				this.movement.x += delta
+				break
+		}
+		
+		console.log(this.movement)
+	}
+	
+	private addMovementEventListeners = () => {
+		document.addEventListener(
+			'keydown',
+			this.onKeyDown = ({ repeat, key }) => repeat || this.modifyMovement(key, true)
+		)
+		
+		document.addEventListener(
+			'keyup',
+			this.onKeyUp = ({ repeat, key }) => repeat || this.modifyMovement(key, false)
+		)
+	}
+	
+	private removeMovementEventListeners = () => {
+		document.removeEventListener('keydown', this.onKeyDown)
+		document.removeEventListener('keyup', this.onKeyUp)
 	}
 	
 	private clear = () => {
