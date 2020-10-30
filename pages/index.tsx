@@ -139,7 +139,7 @@ const Home: NextPage = () => {
 							<p
 								key={i}
 								className={cx(styles.message, {
-									[styles.joinMessage]: message.type === 'join'
+									[styles.logMessage]: message.type !== 'user'
 								})}
 								style={{
 									color: message.type === 'user'
@@ -149,7 +149,7 @@ const Home: NextPage = () => {
 							>
 								{message.type === 'user'
 									? <><b>{message.name}:</b> {message.body}</>
-									: <><b>{message.name}</b> joined</>
+									: <><b>{message.name}</b> {message.type === 'join' ? 'joined' : 'left'}</>
 								}
 							</p>
 						))}
