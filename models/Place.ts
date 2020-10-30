@@ -3,9 +3,12 @@ import IO from 'socket.io-client'
 import User, { getInitialUser } from './User'
 import Line from './Line'
 import Message, { JoinMessage } from './Message'
-import Coordinate, { addCoordinates, isZeroCoordinate, getZeroCoordinate, areCoordinatesEqual } from './Coordinate'
+import Coordinate, { addCoordinates, isZeroCoordinate, getZeroCoordinate, areCoordinatesEqual, areCoordinatesInOrder } from './Coordinate'
+import Bounds from './Bounds'
 import MouseEventCallback from './MouseEventCallback'
 import KeyboardEventCallback from './KeyboardEventCallback'
+
+const SPEED = 3
 
 export default class Place {
 	setName?(name: string): void
@@ -15,6 +18,8 @@ export default class Place {
 	setUsers?(users: User[]): void
 	setLocation?(location: Coordinate): void
 	
+	location: Coordinate = getZeroCoordinate()
+	
 	private context: CanvasRenderingContext2D
 	private io?: SocketIOClient.Socket
 	private isDrawing: boolean = false
@@ -23,7 +28,6 @@ export default class Place {
 	private user: User = getInitialUser()
 	private lines: Line[] = []
 	private movement: Coordinate = getZeroCoordinate()
-	private location: Coordinate = getZeroCoordinate()
 	
 	private onMouseDown?: MouseEventCallback
 	private onMouseMove?: MouseEventCallback
@@ -99,6 +103,16 @@ export default class Place {
 		return this.user.color
 	}
 	
+	get bounds(): Bounds {
+		return {
+			lower: this.location,
+			upper: addCoordinates(this.location, {
+				x: this.canvas.width,
+				y: this.canvas.height
+			})
+		}
+	}
+	
 	changeColor = (color: string) => {
 		this.user.color = color
 		this.setUser?.(this.user)
@@ -118,7 +132,7 @@ export default class Place {
 	
 	changeLocation = (location: Coordinate) => {
 		this.location = location
-		console.log(location)
+		this.refresh()
 	}
 	
 	private addMouseEventListeners = () => {
@@ -172,7 +186,7 @@ export default class Place {
 	}
 	
 	private modifyMovement = (key: string, down: boolean) => {
-		const delta = down ? 1 : -1
+		const delta = down ? SPEED : -SPEED
 		
 		switch (key.toLowerCase()) {
 			case 'w':
@@ -217,7 +231,8 @@ export default class Place {
 	
 	private onMovementTick = () => {
 		if (!isZeroCoordinate(this.movement)) {
-			addCoordinates(this.location, this.movement)
+			this.location = addCoordinates(this.location, this.movement)
+			this.refresh()
 			this.setLocation?.(this.location)
 		}
 		
@@ -230,15 +245,24 @@ export default class Place {
 	}
 	
 	private onCursorMove = (cursor: Coordinate) => {
-		this.user.cursor = cursor
+		this.user.cursor = addCoordinates(this.location, cursor)
 		this.setUser?.(this.user)
 	}
 	
 	private drawLine = ({ from, to, color }: Line) => {
+		const { location, bounds } = this
+		const { x, y } = location
+		
+		if (!(
+			areCoordinatesInOrder(bounds.lower, from, bounds.upper) ||
+			areCoordinatesInOrder(bounds.lower, to, bounds.upper)
+		))
+			return
+		
 		this.context.strokeStyle = color
 		this.context.beginPath()
-		this.context.moveTo(from.x, from.y)
-		this.context.lineTo(to.x, to.y)
+		this.context.moveTo(from.x - x, from.y - y)
+		this.context.lineTo(to.x - x, to.y - y)
 		this.context.stroke()
 	}
 	

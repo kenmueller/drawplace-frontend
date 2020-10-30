@@ -7,7 +7,8 @@ import cx from 'classnames'
 import Place from 'models/Place'
 import Message from 'models/Message'
 import User from 'models/User'
-import Coordinate from 'models/Coordinate'
+import Coordinate, { getZeroCoordinate } from 'models/Coordinate'
+import Bounds from 'models/Bounds'
 import useUpdate from 'hooks/useUpdate'
 import useWindowSize from 'hooks/useWindowSize'
 
@@ -30,6 +31,11 @@ const Home: NextPage = () => {
 	
 	const update = useUpdate()
 	const size = useWindowSize()
+	
+	const bounds: Bounds = place.current?.bounds ?? {
+		lower: getZeroCoordinate(),
+		upper: getZeroCoordinate()
+	}
 	
 	const onNameInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
 		setName(event.target.value)
@@ -253,8 +259,10 @@ const Home: NextPage = () => {
 				</div>
 			</nav>
 			{size && <canvas className={styles.canvas} ref={setCanvas} {...size} />}
-			{user && <Cursor user={user} />}
-			{users.map(user => <Cursor key={user.id} user={user} />)}
+			{user && <Cursor user={user} location={bounds.lower} />}
+			{users.map(user => (
+				<Cursor key={user.id} user={user} location={bounds.lower} bounds={bounds} />
+			))}
 		</>
 	)
 }
