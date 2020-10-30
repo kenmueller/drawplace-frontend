@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
+import { NextPage } from 'next'
 import Head from 'next/head'
 
 import Place from 'models/Place'
 import useWindowSize from 'hooks/useWindowSize'
 
-const Home = () => {
+import styles from 'styles/Home.module.scss'
+
+const Home: NextPage = () => {
 	const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
 	const size = useWindowSize()
 	
@@ -23,6 +26,10 @@ const Home = () => {
 			<Head>
 				<title key="title">drawplace</title>
 			</Head>
+			<h1 className={styles.title}>
+				draw
+				<span className={styles.titleEmphasized}>place</span>
+			</h1>
 			{size && <canvas ref={setCanvas} {...size} />}
 		</>
 	)
