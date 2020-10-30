@@ -13,6 +13,7 @@ import styles from 'styles/Home.module.scss'
 const Home: NextPage = () => {
 	const place = useRef<Place | null>(null)
 	const messagesRef = useRef<HTMLDivElement | null>(null)
+	const messageInput = useRef<HTMLInputElement | null>(null)
 	
 	const [name, setName] = useState('')
 	const [message, setMessage] = useState('')
@@ -61,6 +62,17 @@ const Home: NextPage = () => {
 		update()
 	}, [place, update])
 	
+	const onKeyDown = useCallback((event: KeyboardEvent) => {
+		if (
+			document.activeElement instanceof HTMLInputElement ||
+			!(messageInput.current && event.key.toLowerCase() === 't')
+		)
+			return
+		
+		event.preventDefault()
+		messageInput.current.focus()
+	}, [messageInput])
+	
 	useEffect(() => {
 		if (!canvas)
 			return
@@ -83,6 +95,11 @@ const Home: NextPage = () => {
 		if (messagesRef.current)
 			messagesRef.current.scrollTop = messagesRef.current.scrollHeight
 	}, [messagesRef, messages])
+	
+	useEffect(() => {
+		document.addEventListener('keydown', onKeyDown)
+		return () => document.removeEventListener('keydown', onKeyDown)
+	}, [onKeyDown])
 	
 	return (
 		<>
@@ -126,6 +143,7 @@ const Home: NextPage = () => {
 					<form className={styles.messageForm} onSubmit={onMessageSubmit}>
 						<input
 							className={styles.messageInput}
+							ref={messageInput}
 							required
 							placeholder="type 't' to chat"
 							value={message}
