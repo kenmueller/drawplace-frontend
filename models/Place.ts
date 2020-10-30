@@ -2,11 +2,14 @@ import IO from 'socket.io-client'
 
 import User, { getInitialUser } from './User'
 import Line from './Line'
+import Message from './Message'
 import Coordinate from './Coordinate'
 import MouseEventCallback from './MouseEventCallback'
 
 export default class Place {
 	setName?(name: string): void
+	setMessages?(messages: Message[]): void
+	addMessage?(message: Message): void
 	
 	private context: CanvasRenderingContext2D
 	private io?: SocketIOClient.Socket
@@ -45,6 +48,14 @@ export default class Place {
 		this.io.on('line', (line: Line) => {
 			this.lines.push(line)
 			this.drawLine(line)
+		})
+		
+		this.io.on('messages', (messages: Message[]) => {
+			this.setMessages?.(messages)
+		})
+		
+		this.io.on('message', (message: Message) => {
+			this.addMessage?.(message)
 		})
 		
 		this.onMouseDown = ({ offsetX: x, offsetY: y }) => {
@@ -118,6 +129,16 @@ export default class Place {
 	changeColor = (color: string) => {
 		this.io.emit('color', this.user.color = color)
 		this.refresh()
+	}
+	
+	sendMessage = (body: string): Message => {
+		this.io.emit('message', body)
+		
+		return {
+			name: this.user.name,
+			color: this.user.color,
+			body
+		}
 	}
 	
 	private clear = () => {
