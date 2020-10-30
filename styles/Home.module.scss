@@ -4,8 +4,13 @@
 	left: 20px;
 	font-weight: 900;
 	color: #f85ea1;
+	pointer-events: none;
 }
 
 .titleEmphasized {
 	color: #1486e7;
+}
+
+.canvas {
+	cursor: none;
 }

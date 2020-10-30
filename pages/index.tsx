@@ -30,7 +30,7 @@ const Home: NextPage = () => {
 				draw
 				<span className={styles.titleEmphasized}>place</span>
 			</h1>
-			{size && <canvas ref={setCanvas} {...size} />}
+			{size && <canvas className={styles.canvas} ref={setCanvas} {...size} />}
 		</>
 	)
 }
