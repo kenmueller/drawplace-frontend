@@ -1,0 +1,21 @@
+$radius: 5px;
+
+.root {
+	position: absolute;
+	pointer-events: none;
+	
+	&::before {
+		content: attr(data-name);
+		position: absolute;
+		left: $radius;
+		bottom: 25px;
+		text-align: center;
+		white-space: nowrap;
+		transform: translateX(-50%);
+	}
+}
+
+.cursor {
+	width: $radius * 2;
+	height: $radius * 2;
+}
