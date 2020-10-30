@@ -25,6 +25,8 @@ const Home: NextPage = () => {
 	const [user, setUser] = useState<User | null>(null)
 	const [users, setUsers] = useState<User[]>([])
 	const [location, setLocation] = useState(getZeroCoordinate())
+	const [locationX, setLocationX] = useState(location.x)
+	const [locationY, setLocationY] = useState(location.y)
 	const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
 	
 	const update = useUpdate()
@@ -60,6 +62,29 @@ const Home: NextPage = () => {
 			place.current.sendMessage(message)
 		])
 	}, [place, message])
+	
+	const onLocationSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault()
+		console.log(location, { x: locationX, y: locationY })
+	}, [location, locationX, locationY])
+	
+	const onLocationChange = useCallback((
+		event: ChangeEvent<HTMLInputElement>,
+		setLocation: (location: number) => void
+	) => {
+		const value = parseInt(event.target.value, 10)
+		
+		if (!Number.isNaN(value))
+			setLocation(value)
+	}, [])
+	
+	const onLocationXChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+		onLocationChange(event, setLocationX)
+	}, [onLocationChange, setLocationX])
+	
+	const onLocationYChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+		onLocationChange(event, setLocationY)
+	}, [onLocationChange, setLocationY])
 	
 	const onColorChange: ColorChangeHandler = useCallback(({ hex }) => {
 		if (!place.current || place.current.color === hex)
@@ -146,7 +171,7 @@ const Home: NextPage = () => {
 						save
 					</button>
 				</form>
-				<form className={styles.locationForm}>
+				<form className={styles.locationForm} onSubmit={onLocationSubmit}>
 					<div className={styles.location}>
 						<label className={styles.locationLabel} htmlFor="location-x-input">
 							x
@@ -156,7 +181,8 @@ const Home: NextPage = () => {
 							id="location-x-input"
 							required
 							type="number"
-							value={location.x}
+							value={locationX}
+							onChange={onLocationXChange}
 						/>
 					</div>
 					<div className={styles.location}>
@@ -168,9 +194,16 @@ const Home: NextPage = () => {
 							id="location-y-input"
 							required
 							type="number"
-							value={location.y}
+							value={locationY}
+							onChange={onLocationYChange}
 						/>
 					</div>
+					<button
+						className={styles.locationSubmit}
+						disabled={location.x === locationX && location.y === locationY}
+					>
+						go
+					</button>
 				</form>
 				<ChromePicker
 					className={styles.color}
