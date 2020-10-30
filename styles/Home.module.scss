@@ -56,6 +56,40 @@ $dark: #292d3e;
 	}
 }
 
+.locationForm {
+	display: flex;
+	height: 30px;
+	margin-right: 20px;
+	overflow: hidden;
+	background: transparentize(white, 0.9);
+	border-radius: 8px;
+}
+
+.location {
+	display: flex;
+}
+
+.locationLabel {
+	align-self: center;
+	padding: 0 8px;
+	font-weight: 900;
+	color: white;
+}
+
+.locationInput {
+	width: 50px;
+	padding: 0 8px;
+	color: white;
+	background: transparentize(white, 0.9);
+	-moz-appearance: textfield;
+	
+	&::-webkit-outer-spin-button,
+	&::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+}
+
 .color {
 	align-self: flex-start;
 	margin-right: 20px;
