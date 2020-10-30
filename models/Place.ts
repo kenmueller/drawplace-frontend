@@ -3,7 +3,7 @@ import IO from 'socket.io-client'
 import User, { getInitialUser } from './User'
 import Line from './Line'
 import Message, { JoinMessage } from './Message'
-import Coordinate from './Coordinate'
+import Coordinate, { addCoordinates, isZeroCoordinate, getZeroCoordinate } from './Coordinate'
 import MouseEventCallback from './MouseEventCallback'
 import KeyboardEventCallback from './KeyboardEventCallback'
 
@@ -21,7 +21,8 @@ export default class Place {
 	private pendingJoinMessage?: JoinMessage
 	private user: User = getInitialUser()
 	private lines: Line[] = []
-	private movement: Coordinate = { x: 0, y: 0 }
+	private movement: Coordinate = getZeroCoordinate()
+	private location: Coordinate = getZeroCoordinate()
 	
 	private onMouseDown?: MouseEventCallback
 	private onMouseMove?: MouseEventCallback
@@ -178,8 +179,6 @@ export default class Place {
 				this.movement.x += delta
 				break
 		}
-		
-		console.log(this.movement)
 	}
 	
 	private addMovementEventListeners = () => {
@@ -192,11 +191,22 @@ export default class Place {
 			'keyup',
 			this.onKeyUp = ({ repeat, key }) => repeat || this.modifyMovement(key, false)
 		)
+		
+		requestAnimationFrame(this.onMovementTick)
 	}
 	
 	private removeMovementEventListeners = () => {
 		document.removeEventListener('keydown', this.onKeyDown)
 		document.removeEventListener('keyup', this.onKeyUp)
+	}
+	
+	private onMovementTick = () => {
+		if (!isZeroCoordinate(this.movement)) {
+			addCoordinates(this.location, this.movement)
+			console.log(this.location)
+		}
+		
+		requestAnimationFrame(this.onMovementTick)
 	}
 	
 	private clear = () => {

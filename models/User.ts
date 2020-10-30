@@ -1,5 +1,4 @@
-import { stringify } from 'querystring'
-import Coordinate from './Coordinate'
+import Coordinate, { getZeroCoordinate } from './Coordinate'
 
 export default interface User {
 	id: string
@@ -10,7 +9,7 @@ export default interface User {
 
 export const getInitialUser = (): User => ({
 	id: '',
-	cursor: { x: 0, y: 0 },
+	cursor: getZeroCoordinate(),
 	name: '',
 	color: '#000000'
 })
