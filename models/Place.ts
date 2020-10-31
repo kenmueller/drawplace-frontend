@@ -1,12 +1,13 @@
 import IO from 'socket.io-client'
 
 import User, { getInitialUser } from './User'
-import Line from './Line'
+import Line, { getChunkIdForLine } from './Line'
 import Message, { JoinMessage } from './Message'
 import Coordinate, { addCoordinates, subtractCoordinates, isZeroCoordinate, getZeroCoordinate, areCoordinatesEqual, areCoordinatesInOrder } from './Coordinate'
 import Bounds from './Bounds'
 import MouseEventCallback from './MouseEventCallback'
 import KeyboardEventCallback from './KeyboardEventCallback'
+import Chunk from './Chunk'
 
 const SPEED = 3
 
@@ -26,7 +27,7 @@ export default class Place {
 	private didLoadMessages: boolean = false
 	private pendingJoinMessage?: JoinMessage
 	private user: User = getInitialUser()
-	private lines: Line[] = []
+	private chunks: Chunk[] = []
 	private movement: Coordinate = getZeroCoordinate()
 	
 	private onMouseDown?: MouseEventCallback
@@ -50,13 +51,13 @@ export default class Place {
 			this.setUsers?.(users)
 		})
 		
-		this.io.on('lines', (lines: Line[]) => {
-			this.lines = lines
-			this.drawLines()
+		this.io.on('add-chunk', (chunk: Chunk) => {
+			this.chunks.push(chunk)
+			this.drawChunk(chunk)
 		})
 		
-		this.io.on('line', (line: Line) => {
-			this.lines.push(line)
+		this.io.on('line', (chunkId: string, line: Line) => {
+			this.chunkWithId(chunkId)?.lines.push(line)
 			this.drawLine(line)
 		})
 		
@@ -84,7 +85,7 @@ export default class Place {
 	
 	refresh = () => {
 		this.clear()
-		this.drawLines()
+		this.drawChunks()
 	}
 	
 	changeName = (name: string) => {
@@ -137,7 +138,15 @@ export default class Place {
 		)
 		this.location = location
 		this.refresh()
+		this.emitCursor()
 	}
+	
+	private emitCursor = () => {
+		this.io.emit('cursor', this.user.cursor)
+	}
+	
+	private chunkWithId = (id: string) =>
+		this.chunks.find(chunk => chunk.id === id)
 	
 	private addMouseEventListeners = () => {
 		this.canvas.addEventListener(
@@ -166,11 +175,11 @@ export default class Place {
 					}
 					
 					this.drawLine(line)
-					this.lines.push(line)
+					this.chunkWithId(getChunkIdForLine(line))?.lines.push(line)
 					this.io.emit('line', line)
 				}
 				
-				this.io.emit('cursor', this.user.cursor)
+				this.emitCursor()
 			}
 		)
 		
@@ -239,6 +248,7 @@ export default class Place {
 			this.location = addCoordinates(this.location, this.movement)
 			this.refresh()
 			this.setLocation?.(this.location)
+			this.emitCursor()
 		}
 		
 		requestAnimationFrame(this.onMovementTick)
@@ -271,8 +281,12 @@ export default class Place {
 		this.context.stroke()
 	}
 	
-	private drawLines = () => {
-		this.lines.forEach(this.drawLine)
+	private drawChunk = (chunk: Chunk) => {
+		chunk.lines.forEach(this.drawLine)
+	}
+	
+	private drawChunks = () => {
+		this.chunks.forEach(this.drawChunk)
 	}
 	
 	private addJoinMessage = () => {
