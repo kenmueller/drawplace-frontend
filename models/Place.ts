@@ -41,7 +41,9 @@ export default class Place {
 	constructor(private canvas: HTMLCanvasElement) {
 		this.context = canvas.getContext('2d')
 		this.io = IO(process.env.NEXT_PUBLIC_API_BASE_URL)
+		
 		this.bounds = this.getBounds()
+		this.emitBounds()
 		
 		this.io.on('name', (name: string) => {
 			this.user.name = name
@@ -53,7 +55,7 @@ export default class Place {
 			this.setUsers?.(users)
 		})
 		
-		this.io.on('add-chunk', (chunk: Chunk) => {
+		this.io.on('chunk', (chunk: Chunk) => {
 			this.chunks.push(chunk)
 			this.drawChunk(chunk)
 		})
@@ -131,7 +133,7 @@ export default class Place {
 	changeBounds = () => {
 		this.bounds = this.getBounds()
 		this.refresh()
-		this.io.emit('bounds', this.bounds)
+		this.emitBounds()
 	}
 	
 	private getBounds = (): Bounds => ({
@@ -141,6 +143,10 @@ export default class Place {
 			y: this.canvas.height
 		})
 	})
+	
+	private emitBounds = () => {
+		this.io.emit('bounds', this.bounds)
+	}
 	
 	private refresh = () => {
 		this.clear()
