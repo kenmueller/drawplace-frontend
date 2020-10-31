@@ -1,4 +1,4 @@
-import Coordinate from './Coordinate'
+import Coordinate, { getChunkIdForCoordinate } from './Coordinate'
 
 export default interface Line {
 	from: Coordinate
@@ -6,5 +6,5 @@ export default interface Line {
 	color: string
 }
 
-export const getChunkIdForLine = ({ from: { x, y } }: Line) =>
-	`${Math.floor(x / 1000)}x${Math.floor(y / 1000)}`
+export const getChunkIdForLine = ({ from }: Line) =>
+	getChunkIdForCoordinate(from)
