@@ -148,7 +148,7 @@ const Home: NextPage = () => {
 	}, [canvas, place, setName, setMessages, setUser, setUsers, setLocationX, setLocationY, update])
 	
 	useEffect(() => {
-		place.current?.refresh()
+		place.current?.changeBounds()
 	}, [place, size])
 	
 	useEffect(() => {

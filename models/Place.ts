@@ -7,7 +7,7 @@ import Coordinate, { addCoordinates, subtractCoordinates, isZeroCoordinate, getZ
 import Bounds from './Bounds'
 import MouseEventCallback from './MouseEventCallback'
 import KeyboardEventCallback from './KeyboardEventCallback'
-import Chunk from './Chunk'
+import Chunk, { isChunkInBounds } from './Chunk'
 
 const SPEED = 3
 
@@ -20,6 +20,7 @@ export default class Place {
 	setLocation?(location: Coordinate): void
 	
 	location: Coordinate = getZeroCoordinate()
+	bounds: Bounds
 	
 	private context: CanvasRenderingContext2D
 	private io?: SocketIOClient.Socket
@@ -40,6 +41,7 @@ export default class Place {
 	constructor(private canvas: HTMLCanvasElement) {
 		this.context = canvas.getContext('2d')
 		this.io = IO(process.env.NEXT_PUBLIC_API_BASE_URL)
+		this.bounds = this.getBounds()
 		
 		this.io.on('name', (name: string) => {
 			this.user.name = name
@@ -83,11 +85,6 @@ export default class Place {
 		this.removeMovementEventListeners()
 	}
 	
-	refresh = () => {
-		this.clear()
-		this.drawChunks()
-	}
-	
 	changeName = (name: string) => {
 		this.user.name = name
 		this.setUser?.(this.user)
@@ -102,16 +99,6 @@ export default class Place {
 	
 	get color() {
 		return this.user.color
-	}
-	
-	get bounds(): Bounds {
-		return {
-			lower: this.location,
-			upper: addCoordinates(this.location, {
-				x: this.canvas.width,
-				y: this.canvas.height
-			})
-		}
 	}
 	
 	changeColor = (color: string) => {
@@ -137,8 +124,27 @@ export default class Place {
 			subtractCoordinates(location, this.location)
 		)
 		this.location = location
-		this.refresh()
+		this.changeBounds()
 		this.emitCursor()
+	}
+	
+	changeBounds = () => {
+		this.bounds = this.getBounds()
+		this.refresh()
+		this.io.emit('bounds', this.bounds)
+	}
+	
+	private getBounds = (): Bounds => ({
+		lower: this.location,
+		upper: addCoordinates(this.location, {
+			x: this.canvas.width,
+			y: this.canvas.height
+		})
+	})
+	
+	private refresh = () => {
+		this.clear()
+		this.drawChunks()
 	}
 	
 	private emitCursor = () => {
@@ -246,8 +252,8 @@ export default class Place {
 		if (!isZeroCoordinate(this.movement)) {
 			this.user.cursor = addCoordinates(this.user.cursor, this.movement)
 			this.location = addCoordinates(this.location, this.movement)
-			this.refresh()
 			this.setLocation?.(this.location)
+			this.changeBounds()
 			this.emitCursor()
 		}
 		
@@ -282,7 +288,8 @@ export default class Place {
 	}
 	
 	private drawChunk = (chunk: Chunk) => {
-		chunk.lines.forEach(this.drawLine)
+		if (isChunkInBounds(chunk, this.bounds))
+			chunk.lines.forEach(this.drawLine)
 	}
 	
 	private drawChunks = () => {
