@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect, ChangeEvent, FormEvent } from 'react'
-import { NextPage } from 'next'
+import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { ColorChangeHandler, ChromePicker } from 'react-color'
 import cx from 'classnames'
@@ -11,11 +11,18 @@ import Coordinate, { getZeroCoordinate } from 'models/Coordinate'
 import Bounds from 'models/Bounds'
 import useUpdate from 'hooks/useUpdate'
 import useWindowSize from 'hooks/useWindowSize'
+import Cursor from './Cursor'
 
 import styles from 'styles/Home.module.scss'
-import Cursor from 'components/Cursor'
 
-const Home: NextPage = () => {
+interface Query {
+	x?: string
+	y?: string
+}
+
+const DrawPlace = () => {
+	const { x, y } = useRouter().query as Query
+	
 	const place = useRef<Place | null>(null)
 	const messagesRef = useRef<HTMLDivElement | null>(null)
 	const messageInput = useRef<HTMLInputElement | null>(null)
@@ -146,8 +153,18 @@ const Home: NextPage = () => {
 			setLocationY(y.toString())
 		}
 		
+		if (x && y) {
+			const location: Coordinate = {
+				x: parseInt(x, 10),
+				y: parseInt(y, 10)
+			}
+			
+			if (!(Number.isNaN(location.x) || Number.isNaN(location.y)))
+				place.current.setInitialLocation(location)
+		}
+		
 		return place.current.stop
-	}, [canvas, place, setName, setMessages, setUser, setUsers, setLocationX, setLocationY, update])
+	}, [canvas, place, x, y, setName, setMessages, setUser, setUsers, setLocationX, setLocationY, update])
 	
 	useEffect(() => {
 		place.current?.changeBounds()
@@ -280,4 +297,4 @@ const Home: NextPage = () => {
 	)
 }
 
-export default Home
+export default DrawPlace

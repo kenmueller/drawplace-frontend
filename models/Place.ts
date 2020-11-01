@@ -138,6 +138,11 @@ export default class Place {
 		this.emitBounds()
 	}
 	
+	setInitialLocation = (location: Coordinate) => {
+		this.changeLocation(location)
+		this.setLocation?.(location)
+	}
+	
 	private getBounds = (): Bounds => ({
 		lower: this.location,
 		upper: addCoordinates(this.location, {
