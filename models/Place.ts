@@ -97,6 +97,8 @@ export default class Place {
 		this.user.name === name
 	
 	isLocation = (location: Coordinate) =>
+		Number.isNaN(location.x) ||
+		Number.isNaN(location.y) ||
 		areCoordinatesEqual(this.location, location)
 	
 	get color() {

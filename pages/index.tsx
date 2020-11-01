@@ -14,7 +14,7 @@ import useWindowSize from 'hooks/useWindowSize'
 
 import styles from 'styles/Home.module.scss'
 import Cursor from 'components/Cursor'
-let i = 0
+
 const Home: NextPage = () => {
 	const place = useRef<Place | null>(null)
 	const messagesRef = useRef<HTMLDivElement | null>(null)
@@ -25,8 +25,8 @@ const Home: NextPage = () => {
 	const [messages, setMessages] = useState<Message[]>([])
 	const [user, setUser] = useState<User | null>(null)
 	const [users, setUsers] = useState<User[]>([])
-	const [locationX, setLocationX] = useState(0)
-	const [locationY, setLocationY] = useState(0)
+	const [locationX, setLocationX] = useState('0')
+	const [locationY, setLocationY] = useState('0')
 	const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
 	
 	const update = useUpdate()
@@ -53,6 +53,9 @@ const Home: NextPage = () => {
 		
 		place.current.changeName(name)
 		update()
+		
+		if (document.activeElement instanceof HTMLInputElement)
+			document.activeElement.blur()
 	}, [place, name, update])
 	
 	const onMessageSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
@@ -66,37 +69,36 @@ const Home: NextPage = () => {
 			...messages,
 			place.current.sendMessage(message)
 		])
+		
+		if (document.activeElement instanceof HTMLInputElement)
+			document.activeElement.blur()
 	}, [place, message])
 	
 	const onLocationSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 		
-		const location: Coordinate = { x: locationX, y: locationY }
+		const location: Coordinate = {
+			x: parseInt(locationX, 10),
+			y: parseInt(locationY, 10)
+		}
 		
 		if (place.current?.isLocation(location) ?? true)
 			return
 		
 		place.current.changeLocation(location)
 		update()
+		
+		if (document.activeElement instanceof HTMLInputElement)
+			document.activeElement.blur()
 	}, [locationX, locationY, place, update])
 	
-	const onLocationChange = useCallback((
-		event: ChangeEvent<HTMLInputElement>,
-		setLocation: (location: number) => void
-	) => {
-		const value = parseInt(event.target.value, 10)
-		
-		if (!Number.isNaN(value))
-			setLocation(value)
-	}, [])
-	
 	const onLocationXChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-		onLocationChange(event, setLocationX)
-	}, [onLocationChange, setLocationX])
+		setLocationX(event.target.value)
+	}, [setLocationX])
 	
 	const onLocationYChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-		onLocationChange(event, setLocationY)
-	}, [onLocationChange, setLocationY])
+		setLocationY(event.target.value)
+	}, [setLocationY])
 	
 	const onColorChange: ColorChangeHandler = useCallback(({ hex }) => {
 		if (!place.current || place.current.color === hex)
@@ -140,8 +142,8 @@ const Home: NextPage = () => {
 		place.current.setUsers = setUsers
 		
 		place.current.setLocation = ({ x, y }) => {
-			setLocationX(x)
-			setLocationY(y)
+			setLocationX(x.toString())
+			setLocationY(y.toString())
 		}
 		
 		return place.current.stop
@@ -220,7 +222,10 @@ const Home: NextPage = () => {
 					</div>
 					<button
 						className={styles.locationSubmit}
-						disabled={place.current?.isLocation({ x: locationX, y: locationY }) ?? true}
+						disabled={place.current?.isLocation({
+							x: parseInt(locationX, 10),
+							y: parseInt(locationY, 10)
+						}) ?? true}
 					>
 						go
 					</button>
