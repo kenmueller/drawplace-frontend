@@ -1,8 +1,8 @@
 import Bounds from './Bounds'
-import { addCoordinates, areCoordinatesInOrder } from './Coordinate'
+import Coordinate from './Coordinate'
 import Line from './Line'
 
-export const CHUNK_DIMENSION = 10000
+export const CHUNK_DIMENSION = 2500
 
 export default interface Chunk {
 	id: string
@@ -11,10 +11,8 @@ export default interface Chunk {
 	lines: Line[]
 }
 
-export const isChunkInBounds = (chunk: Chunk, bounds: Bounds) =>
-	areCoordinatesInOrder(bounds.lower, chunk, bounds.upper) ||
-	areCoordinatesInOrder(
-		bounds.lower,
-		addCoordinates(chunk, { x: CHUNK_DIMENSION, y: CHUNK_DIMENSION }),
-		bounds.upper
-	)
+export const isChunkInBounds = (chunk: Coordinate, bounds: Bounds) =>
+	chunk.x + CHUNK_DIMENSION >= bounds.lower.x &&
+	chunk.x <= bounds.upper.x &&
+	chunk.y <= bounds.upper.y &&
+	chunk.y + CHUNK_DIMENSION >= bounds.lower.y
