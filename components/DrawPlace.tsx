@@ -4,8 +4,6 @@ import Head from 'next/head'
 import copy from 'copy-to-clipboard'
 import { toast } from 'react-toastify'
 import { ColorChangeHandler, ChromePicker } from 'react-color'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import cx from 'classnames'
 
 import Place from 'models/Place'
@@ -233,6 +231,9 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 					<span className={styles.movementIndicator}>move with</span>
 					W A S D
 				</p>
+				<button className={styles.copyLocation} onClick={copyLocation}>
+					save drawing
+				</button>
 				<form className={styles.locationForm} onSubmit={onLocationSubmit}>
 					<div className={styles.location}>
 						<label className={styles.locationLabel} htmlFor="location-x-input">
@@ -270,14 +271,6 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 						go
 					</button>
 				</form>
-				<button
-					className={styles.copyLocation}
-					onClick={copyLocation}
-					aria-label="Save your drawing"
-					data-balloon-pos="down"
-				>
-					<FontAwesomeIcon icon={faCamera} />
-				</button>
 				<ChromePicker
 					className={styles.color}
 					color={place.current?.color ?? '#000000'}

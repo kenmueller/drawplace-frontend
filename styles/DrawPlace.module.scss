@@ -1,5 +1,6 @@
 $pink: #f85ea1;
 $blue: #1486e7;
+$light-gray: #a9a9a9;
 $dark: #292d3e;
 
 .navbar {
@@ -77,6 +78,22 @@ $dark: #292d3e;
 	font-size: 12px;
 	font-weight: bold;
 	transform: translateY(-50%);
+}
+
+.copyLocation {
+	height: 30px;
+	padding: 0 8px;
+	margin-right: 20px;
+	font-weight: 900;
+	color: white;
+	background: $blue;
+	border-radius: 8px;
+	transition: color 0.3s, background 0.3s;
+	
+	&:hover {
+		color: $blue;
+		background: white;
+	}
 }
 
 .locationForm {
@@ -162,7 +179,7 @@ $dark: #292d3e;
 
 .logMessage {
 	text-align: center;
-	color: #a9a9a9;
+	color: $light-gray;
 }
 
 .messageForm {

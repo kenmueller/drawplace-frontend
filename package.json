@@ -7,10 +7,6 @@
 		"start": "next dev"
 	},
 	"dependencies": {
-		"@fortawesome/fontawesome-svg-core": "^1.2.32",
-		"@fortawesome/free-solid-svg-icons": "^5.15.1",
-		"@fortawesome/react-fontawesome": "^0.1.12",
-		"balloon-css": "^1.2.0",
 		"classnames": "^2.2.6",
 		"copy-to-clipboard": "^3.3.1",
 		"next": "^10.0.0",
