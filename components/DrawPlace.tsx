@@ -4,6 +4,7 @@ import Head from 'next/head'
 import copy from 'copy-to-clipboard'
 import { toast } from 'react-toastify'
 import { ColorChangeHandler, ChromePicker } from 'react-color'
+import { Svg } from 'react-optimized-image'
 import cx from 'classnames'
 
 import Place from 'models/Place'
@@ -11,9 +12,13 @@ import Message from 'models/Message'
 import User from 'models/User'
 import Coordinate, { getZeroCoordinate } from 'models/Coordinate'
 import Bounds from 'models/Bounds'
+import { title, description, data } from 'lib/meta'
 import useUpdate from 'hooks/useUpdate'
 import useWindowSize from 'hooks/useWindowSize'
 import Cursor from './Cursor'
+
+import icon from 'images/icon.svg'
+import { src as share } from 'images/share.png'
 
 import styles from 'styles/DrawPlace.module.scss'
 
@@ -45,6 +50,7 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 	const update = useUpdate()
 	const size = useWindowSize()
 	
+	const url = `https://draw.place${x && y && `/${x}/${y}`}`
 	const bounds: Bounds = place.current?.bounds ?? {
 		lower: getZeroCoordinate(),
 		upper: getZeroCoordinate()
@@ -205,9 +211,20 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 		<>
 			<Head>
 				<link key="api-preconnect" rel="preconnect" href={process.env.NEXT_PUBLIC_API_BASE_URL} />
-				<title key="title">drawplace</title>
+				<link key="canonical" rel="canonical" href={url} />
+				<meta key="description" name="description" content={description} />
+				<meta key="og-url" property="og:url" content={url} />
+				<meta key="og-image" property="og:image" content={share} />
+				<meta key="og-title" property="og:title" content={title} />
+				<meta key="og-description" property="og:description" content={description} />
+				<meta key="twitter-image" name="twitter:image" content={share} />
+				<meta key="twitter-title" name="twitter:title" content={title} />
+				<meta key="twitter-description" name="twitter:description" content={description} />
+				<script key="data" type="application/ld+json" dangerouslySetInnerHTML={data} />
+				<title key="title">{title}</title>
 			</Head>
 			<nav className={styles.navbar}>
+				<Svg className={styles.icon} src={icon} />
 				<h1 className={styles.title}>
 					draw
 					<span className={styles.titleEmphasized}>place</span>

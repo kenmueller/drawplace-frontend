@@ -15,10 +15,16 @@ $dark: #292d3e;
 	background: transparentize($dark, 0.0);
 }
 
+.icon {
+	height: 30px;
+	margin-right: 8px;
+}
+
 .title {
 	margin-right: 20px;
 	font-weight: 900;
 	color: $pink;
+	transform: translateY(-2px);
 }
 
 .titleEmphasized {
