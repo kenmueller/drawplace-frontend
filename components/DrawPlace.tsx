@@ -29,8 +29,7 @@ export interface DrawPlaceProps {
 }
 
 const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
-	const router = useRouter()
-	const { x, y } = router.query as Query
+	const { x, y } = useRouter().query as Query
 	
 	const place = useRef<Place | null>(null)
 	const messagesRef = useRef<HTMLDivElement | null>(null)
@@ -127,9 +126,7 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 		toast.success('Copied your drawing\'s link. Send it to your friends!')
 		
 		;(document.activeElement as any).blur?.()
-		
-		router.push(extension)
-	}, [place, router])
+	}, [place])
 	
 	const onColorChange: ColorChangeHandler = useCallback(({ hex }) => {
 		if (!place.current || place.current.color === hex)
