@@ -1,7 +1,11 @@
 import { useRef, useState, useCallback, useEffect, ChangeEvent, FormEvent } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import copy from 'copy-to-clipboard'
+import { toast } from 'react-toastify'
 import { ColorChangeHandler, ChromePicker } from 'react-color'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import cx from 'classnames'
 
 import Place from 'models/Place'
@@ -13,15 +17,20 @@ import useUpdate from 'hooks/useUpdate'
 import useWindowSize from 'hooks/useWindowSize'
 import Cursor from './Cursor'
 
-import styles from 'styles/Home.module.scss'
+import styles from 'styles/DrawPlace.module.scss'
 
 interface Query {
 	x?: string
 	y?: string
 }
 
-const DrawPlace = () => {
-	const { x, y } = useRouter().query as Query
+export interface DrawPlaceProps {
+	withInitialCoordinates?: boolean
+}
+
+const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
+	const router = useRouter()
+	const { x, y } = router.query as Query
 	
 	const place = useRef<Place | null>(null)
 	const messagesRef = useRef<HTMLDivElement | null>(null)
@@ -107,6 +116,21 @@ const DrawPlace = () => {
 		setLocationY(event.target.value)
 	}, [setLocationY])
 	
+	const copyLocation = useCallback(() => {
+		if (!place.current)
+			return
+		
+		const { x, y } = place.current.location
+		const extension = `/${x}/${y}`
+		
+		copy(`https://draw.place${extension}`)
+		toast.success('Copied your drawing\'s link. Send it to your friends!')
+		
+		;(document.activeElement as any).blur?.()
+		
+		router.push(extension)
+	}, [place, router])
+	
 	const onColorChange: ColorChangeHandler = useCallback(({ hex }) => {
 		if (!place.current || place.current.color === hex)
 			return
@@ -131,7 +155,7 @@ const DrawPlace = () => {
 	}, [messageInput])
 	
 	useEffect(() => {
-		if (!canvas)
+		if (!canvas || place.current || (withInitialCoordinates && !(x && y)))
 			return
 		
 		place.current = new Place(canvas)
@@ -153,7 +177,7 @@ const DrawPlace = () => {
 			setLocationY(y.toString())
 		}
 		
-		if (x && y) {
+		if (withInitialCoordinates) {
 			const location: Coordinate = {
 				x: parseInt(x, 10),
 				y: parseInt(y, 10)
@@ -162,9 +186,7 @@ const DrawPlace = () => {
 			if (!(Number.isNaN(location.x) || Number.isNaN(location.y)))
 				place.current.setInitialLocation(location)
 		}
-		
-		return place.current.stop
-	}, [canvas, place, x, y, setName, setMessages, setUser, setUsers, setLocationX, setLocationY, update])
+	}, [canvas, place, withInitialCoordinates, x, y, setName, setMessages, setUser, setUsers, setLocationX, setLocationY, update])
 	
 	useEffect(() => {
 		place.current?.changeBounds()
@@ -179,6 +201,10 @@ const DrawPlace = () => {
 		document.addEventListener('keydown', onKeyDown)
 		return () => document.removeEventListener('keydown', onKeyDown)
 	}, [onKeyDown])
+	
+	useEffect(() => (
+		() => place.current?.stop()
+	), [place])
 	
 	return (
 		<>
@@ -247,6 +273,14 @@ const DrawPlace = () => {
 						go
 					</button>
 				</form>
+				<button
+					className={styles.copyLocation}
+					onClick={copyLocation}
+					aria-label="Save your drawing"
+					data-balloon-pos="down"
+				>
+					<FontAwesomeIcon icon={faCamera} />
+				</button>
 				<ChromePicker
 					className={styles.color}
 					color={place.current?.color ?? '#000000'}

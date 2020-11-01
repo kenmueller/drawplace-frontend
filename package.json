@@ -7,13 +7,19 @@
 		"start": "next dev"
 	},
 	"dependencies": {
+		"@fortawesome/fontawesome-svg-core": "^1.2.32",
+		"@fortawesome/free-solid-svg-icons": "^5.15.1",
+		"@fortawesome/react-fontawesome": "^0.1.12",
+		"balloon-css": "^1.2.0",
 		"classnames": "^2.2.6",
+		"copy-to-clipboard": "^3.3.1",
 		"next": "^10.0.0",
 		"next-compose-plugins": "^2.2.0",
 		"next-pwa": "^3.1.5",
 		"react": "^17.0.1",
 		"react-color": "^2.19.3",
 		"react-dom": "^17.0.1",
+		"react-toastify": "^6.0.9",
 		"sass": "^1.28.0",
 		"socket.io-client": "^2.3.1"
 	},
