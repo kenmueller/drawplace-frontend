@@ -12,6 +12,12 @@
 			"**/.*",
 			"**/node_modules/**"
 		],
+		"rewrites": [
+			{
+				"source": "/*/*",
+				"destination": "/[x]/[y].html"
+			}
+		],
 		"headers": [
 			{
 				"source": "**",
