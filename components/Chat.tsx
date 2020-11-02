@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback, useEffect, SetStateAction, FormEvent, ChangeEvent } from 'react'
+import cx from 'classnames'
 
 import Place from 'models/Place'
 import Message from 'models/Message'
@@ -7,12 +8,13 @@ import MessageRow from './MessageRow'
 import styles from 'styles/Chat.module.scss'
 
 export interface ChatProps {
+	className?: string
 	place: Place | null
 	messages: Message[]
 	setMessages(messages: SetStateAction<Message[]>): void
 }
 
-const Chat = ({ place, messages, setMessages }: ChatProps) => {
+const Chat = ({ className, place, messages, setMessages }: ChatProps) => {
 	const container = useRef<HTMLDivElement | null>(null)
 	const input = useRef<HTMLInputElement | null>(null)
 	
@@ -59,7 +61,7 @@ const Chat = ({ place, messages, setMessages }: ChatProps) => {
 	}, [onKeyDown])
 	
 	return (
-		<div className={styles.root}>
+		<div className={cx(styles.root, className)}>
 			<div className={styles.messages} ref={container}>
 				{messages.map((message, i) =>
 					<MessageRow key={i} messages={messages} message={message} i={i} />

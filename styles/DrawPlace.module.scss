@@ -1,6 +1,10 @@
 @use 'colors';
 
+$spacing: var(--spacing);
+
 .navbar {
+	--spacing: 8px;
+	
 	display: flex;
 	position: absolute;
 	align-items: center;
@@ -8,20 +12,34 @@
 	left: 0;
 	right: 0;
 	height: 62px;
-	padding: 16px 20px;
+	padding: 16px $spacing;
 	background: transparentize(colors.$dark, 0.0);
+	
+	@media (min-width: 1000px) {
+		--spacing: 12px;
+	}
+	
+	@media (min-width: 1050px) {
+		--spacing: 20px;
+	}
 }
 
 .icon {
+	flex-shrink: 0;
 	height: 30px;
-	margin-right: 8px;
 }
 
 .title {
-	margin-right: 20px;
+	flex-shrink: 0;
+	display: none;
+	margin-left: 8px;
 	font-weight: 900;
 	color: colors.$pink;
 	transform: translateY(-2px);
+	
+	@media (min-width: 1500px) {
+		display: block;
+	}
 }
 
 .titleEmphasized {
@@ -29,18 +47,24 @@
 }
 
 .nameForm {
+	flex-shrink: 0;
 	display: flex;
 	height: 30px;
-	margin-right: auto;
+	margin: 0 auto 0 $spacing;
 	overflow: hidden;
 	border-radius: 8px;
 }
 
 .nameInput {
+	width: 120px;
 	padding: 0 8px;
 	font-size: 14px;
 	color: white;
 	background: transparentize(white, 0.8);
+	
+	@media (min-width: 1075px) {
+		width: auto;
+	}
 	
 	&::placeholder {
 		color: transparentize(white, 0.5);
@@ -66,14 +90,20 @@
 }
 
 .movement {
+	flex-shrink: 0;
+	display: none;
 	position: relative;
-	margin-right: 20px;
+	margin-left: $spacing;
 	padding: 0 8px;
 	line-height: 30px;
 	color: white;
 	background: transparentize(white, 0.9);
 	font-weight: 900;
 	border-radius: 8px;
+	
+	@media (min-width: 1200px) {
+		display: block;
+	}
 }
 
 .movementIndicator {
@@ -88,9 +118,10 @@
 }
 
 .copyLocation {
+	flex-shrink: 0;
 	height: 30px;
 	padding: 0 8px;
-	margin-right: 20px;
+	margin: 0 $spacing;
 	font-weight: 900;
 	color: white;
 	background: colors.$blue;
@@ -104,9 +135,10 @@
 }
 
 .locationForm {
+	flex-shrink: 0;
 	display: flex;
 	height: 30px;
-	margin-right: 20px;
+	margin-right: $spacing;
 	overflow: hidden;
 	background: transparentize(white, 0.9);
 	border-radius: 8px;
@@ -124,11 +156,15 @@
 }
 
 .locationInput {
-	width: 80px;
+	width: 60px;
 	padding: 0 8px;
 	color: white;
 	background: transparentize(white, 0.9);
 	-moz-appearance: textfield;
+	
+	@media (min-width: 1315px) {
+		width: 80px;
+	}
 	
 	&::placeholder {
 		color: transparentize(white, 0.5);
@@ -161,7 +197,20 @@
 
 .color {
 	align-self: flex-start;
-	margin-right: 20px;
+	margin-right: $spacing;
+}
+
+.chat {
+	flex-shrink: 0;
+	width: 200px;
+	
+	@media (min-width: 970px) {
+		width: 250px;
+	}
+	
+	@media (min-width: 1365px) {
+		width: 300px;
+	}
 }
 
 .canvas {

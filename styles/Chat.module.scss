@@ -6,7 +6,6 @@ $horizontal-padding: 10px;
 	align-self: flex-start;
 	display: flex;
 	flex-direction: column;
-	width: 300px;
 	overflow: hidden;
 	background: colors.$dark;
 	border-radius: 8px;
@@ -46,6 +45,7 @@ $horizontal-padding: 10px;
 
 .input {
 	flex-grow: 1;
+	min-width: 0;
 	padding: 0 8px;
 	font-size: 14px;
 	color: white;

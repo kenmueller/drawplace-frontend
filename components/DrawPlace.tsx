@@ -256,6 +256,7 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 					setColor={setColor}
 				/>
 				<Chat
+					className={styles.chat}
 					place={place.current}
 					messages={messages}
 					setMessages={setMessages}
