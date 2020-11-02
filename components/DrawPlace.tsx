@@ -127,7 +127,7 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 		const extension = `/${x}/${y}`
 		
 		copy(`https://draw.place${extension}`)
-		toast.success('Copied your drawing\'s link. Send it to your friends!')
+		toast.success('Copied a link to your location. Send it to your friends!')
 		
 		;(document.activeElement as any).blur?.()
 	}, [place])
@@ -249,7 +249,7 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 					W A S D
 				</p>
 				<button className={styles.copyLocation} onClick={copyLocation}>
-					save drawing
+					share location
 				</button>
 				<form className={styles.locationForm} onSubmit={onLocationSubmit}>
 					<div className={styles.location}>
