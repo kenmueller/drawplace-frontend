@@ -1,5 +1,4 @@
 import { useRef, useState, useCallback, useEffect, SetStateAction, FormEvent, ChangeEvent } from 'react'
-import cx from 'classnames'
 
 import Place from 'models/Place'
 import Message from 'models/Message'
