@@ -3,6 +3,7 @@ import cx from 'classnames'
 
 import Place from 'models/Place'
 import Message from 'models/Message'
+import MessageRow from './MessageRow'
 
 import styles from 'styles/Chat.module.scss'
 
@@ -61,24 +62,9 @@ const Chat = ({ place, messages, setMessages }: ChatProps) => {
 	return (
 		<div className={styles.root}>
 			<div className={styles.messages} ref={container}>
-				{messages.map((message, i) => (
-					<p
-						key={i}
-						className={cx(styles.message, {
-							[styles.logMessage]: message.type !== 'user'
-						})}
-						style={{
-							color: message.type === 'user'
-								? message.color
-								: undefined
-						}}
-					>
-						{message.type === 'user'
-							? <><b>{message.name}:</b> {message.body}</>
-							: <><b>{message.name}</b> {message.type === 'join' ? 'joined' : 'left'}</>
-						}
-					</p>
-				))}
+				{messages.map((message, i) =>
+					<MessageRow key={i} messages={messages} message={message} i={i} />
+				)}
 			</div>
 			<form className={styles.messageForm} onSubmit={onSubmit}>
 				<input

@@ -5,9 +5,8 @@
 	display: flex;
 	flex-direction: column;
 	width: 300px;
-	height: 241.25px;
 	overflow: hidden;
-	background: white;
+	background: colors.$dark;
 	border-radius: 8px;
 	box-shadow:
 		0 0 2px transparentize(black, 0.7),
@@ -15,19 +14,25 @@
 }
 
 .messages {
-	flex-grow: 1;
-	padding: 0 8px 4px;
+	$horizontal-padding: 10px;
+	$vertical-padding: 12px;
+	$scrollbar-width: 2px;
+	
+	height: 200px;
+	padding:
+		$vertical-padding
+		($horizontal-padding - $scrollbar-width)
+		$vertical-padding
+		$horizontal-padding;
 	overflow-y: auto;
-}
-
-.message {
-	margin-top: 4px;
-	word-wrap: break-word;
-}
-
-.logMessage {
-	text-align: center;
-	color: colors.$light-gray;
+	
+	&::-webkit-scrollbar {
+		width: $scrollbar-width;
+	}
+	
+	&::-webkit-scrollbar-thumb {
+		background: #888;
+	}
 }
 
 .messageForm {

@@ -3,6 +3,7 @@ export interface UserMessage {
 	name: string
 	color: string
 	body: string
+	fromSelf?: boolean
 }
 
 export interface JoinMessage {

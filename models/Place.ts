@@ -118,7 +118,8 @@ export default class Place {
 			type: 'user',
 			name: this.user.name,
 			color: this.user.color,
-			body
+			body,
+			fromSelf: true
 		}
 	}
 	

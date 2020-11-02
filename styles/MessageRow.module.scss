@@ -1,0 +1,53 @@
+@use 'colors';
+
+.root {
+	word-wrap: break-word;
+	
+	& + & {
+		margin-top: 4px;
+		
+		&.log,
+		&.showsName {
+			margin-top: 10px;
+		}
+	}
+}
+
+.log {
+	text-align: center;
+	color: colors.$light-gray;
+	
+	&.root + & {
+		margin-top: 4px;
+	}
+	
+	& + .self {
+		margin-top: 10px;
+	}
+}
+
+.user {
+	max-width: 75%;
+	width: max-content;
+}
+
+.self {
+	margin-left: auto;
+}
+
+.name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 12px;
+	font-weight: 900;
+	color: colors.$light-gray;
+}
+
+.body {
+	max-width: max-content;
+	margin-top: 2px;
+	padding: 6px 12px;
+	background: #f2f2f2;
+	border-radius: 16px;
+}
