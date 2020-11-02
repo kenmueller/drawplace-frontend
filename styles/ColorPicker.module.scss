@@ -1,0 +1,37 @@
+.root {
+	overflow: hidden !important;
+	background: #292d3e !important;
+	border-radius: 8px !important;
+	
+	> :last-child {
+		padding-top: 12px !important;
+		
+		> :first-child {
+			align-items: center !important;
+			
+			> :first-child {
+				> :first-child {
+					margin-top: 0 !important;
+				}
+			}
+			
+			> :last-child {
+				> :first-child {
+					margin-bottom: 0 !important;
+					
+					:global(.hue-horizontal) {
+						border-radius: 8px !important;
+					}
+				}
+				
+				> :last-child {
+					display: none !important;
+				}
+			}
+		}
+		
+		> :last-child {
+			display: none !important;
+		}
+	}
+}

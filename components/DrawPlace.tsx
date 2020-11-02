@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import copy from 'copy-to-clipboard'
 import { toast } from 'react-toastify'
-import { ColorChangeHandler, ChromePicker } from 'react-color'
 import { Svg } from 'react-optimized-image'
 import cx from 'classnames'
 
@@ -15,6 +14,7 @@ import Bounds from 'models/Bounds'
 import { title, description, data } from 'lib/meta'
 import useUpdate from 'hooks/useUpdate'
 import useWindowSize from 'hooks/useWindowSize'
+import ColorPicker from './ColorPicker'
 import Cursor from './Cursor'
 
 import icon from 'images/icon.svg'
@@ -132,11 +132,11 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 		;(document.activeElement as any).blur?.()
 	}, [place])
 	
-	const onColorChange: ColorChangeHandler = useCallback(({ hex }) => {
-		if (!place.current || place.current.color === hex)
+	const setColor = useCallback((color: string) => {
+		if (!place.current || place.current.color === color)
 			return
 		
-		place.current.changeColor(hex)
+		place.current.changeColor(color)
 		update()
 	}, [place, update])
 	
@@ -288,10 +288,10 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 						go
 					</button>
 				</form>
-				<ChromePicker
+				<ColorPicker
 					className={styles.color}
 					color={place.current?.color ?? '#000000'}
-					onChangeComplete={onColorChange}
+					setColor={setColor}
 				/>
 				<div className={styles.chat}>
 					<div className={styles.messages} ref={messagesRef}>
