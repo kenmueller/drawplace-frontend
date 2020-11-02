@@ -1,7 +1,4 @@
-$pink: #f85ea1;
-$blue: #1486e7;
-$light-gray: #a9a9a9;
-$dark: #292d3e;
+@use 'colors';
 
 .navbar {
 	display: flex;
@@ -12,7 +9,7 @@ $dark: #292d3e;
 	right: 0;
 	height: 62px;
 	padding: 16px 20px;
-	background: transparentize($dark, 0.0);
+	background: transparentize(colors.$dark, 0.0);
 }
 
 .icon {
@@ -23,12 +20,12 @@ $dark: #292d3e;
 .title {
 	margin-right: 20px;
 	font-weight: 900;
-	color: $pink;
+	color: colors.$pink;
 	transform: translateY(-2px);
 }
 
 .titleEmphasized {
-	color: $blue;
+	color: colors.$blue;
 }
 
 .nameForm {
@@ -51,7 +48,7 @@ $dark: #292d3e;
 	font-size: 14px;
 	font-weight: 900;
 	color: white;
-	background: $blue;
+	background: colors.$blue;
 	transition: color 0.3s, background 0.3s, opacity 0.3s;
 	
 	&:disabled {
@@ -59,7 +56,7 @@ $dark: #292d3e;
 	}
 	
 	&:not(:disabled):hover {
-		color: $blue;
+		color: colors.$blue;
 		background: white;
 	}
 }
@@ -92,12 +89,12 @@ $dark: #292d3e;
 	margin-right: 20px;
 	font-weight: 900;
 	color: white;
-	background: $blue;
+	background: colors.$blue;
 	border-radius: 8px;
 	transition: color 0.3s, background 0.3s;
 	
 	&:hover {
-		color: $blue;
+		color: colors.$blue;
 		background: white;
 	}
 }
@@ -141,7 +138,7 @@ $dark: #292d3e;
 	font-size: 14px;
 	font-weight: 900;
 	color: white;
-	background: $blue;
+	background: colors.$blue;
 	transition: color 0.3s, background 0.3s, opacity 0.3s;
 	
 	&:disabled {
@@ -149,7 +146,7 @@ $dark: #292d3e;
 	}
 	
 	&:not(:disabled):hover {
-		color: $blue;
+		color: colors.$blue;
 		background: white;
 	}
 }
@@ -157,65 +154,6 @@ $dark: #292d3e;
 .color {
 	align-self: flex-start;
 	margin-right: 20px;
-}
-
-.chat {
-	align-self: flex-start;
-	display: flex;
-	flex-direction: column;
-	width: 300px;
-	height: 241.25px;
-	background: white;
-	border-radius: 2px;
-	box-shadow:
-		0 0 2px transparentize(black, 0.7),
-		0 4px 8px transparentize(black, 0.7);
-}
-
-.messages {
-	flex-grow: 1;
-	padding: 0 8px 4px;
-	overflow-y: auto;
-}
-
-.message {
-	margin-top: 4px;
-	word-wrap: break-word;
-}
-
-.logMessage {
-	text-align: center;
-	color: $light-gray;
-}
-
-.messageForm {
-	display: flex;
-	height: 30px;
-}
-
-.messageInput {
-	flex-grow: 1;
-	padding: 0 8px;
-	font-size: 14px;
-	background: white;
-}
-
-.messageSubmit {
-	padding: 0 8px;
-	font-size: 14px;
-	font-weight: 900;
-	color: white;
-	background: $blue;
-	transition: color 0.3s, background 0.3s, opacity 0.3s;
-	
-	&:disabled {
-		opacity: 0.8;
-	}
-	
-	&:not(:disabled):hover {
-		color: $blue;
-		background: white;
-	}
 }
 
 .canvas {

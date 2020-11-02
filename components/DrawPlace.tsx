@@ -4,7 +4,6 @@ import Head from 'next/head'
 import copy from 'copy-to-clipboard'
 import { toast } from 'react-toastify'
 import { Svg } from 'react-optimized-image'
-import cx from 'classnames'
 
 import Place from 'models/Place'
 import Message from 'models/Message'
@@ -15,12 +14,18 @@ import { title, description, data } from 'lib/meta'
 import useUpdate from 'hooks/useUpdate'
 import useWindowSize from 'hooks/useWindowSize'
 import ColorPicker from './ColorPicker'
+import Chat from './Chat'
 import Cursor from './Cursor'
 
 import icon from 'images/icon.svg'
 import { src as share } from 'images/share.png'
 
 import styles from 'styles/DrawPlace.module.scss'
+
+const onKeyDown = (event: KeyboardEvent) => {
+	if (document.activeElement instanceof HTMLInputElement && event.key === 'Escape')
+		document.activeElement.blur()
+}
 
 interface Query {
 	x?: string
@@ -35,11 +40,8 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 	const { x, y } = useRouter().query as Query
 	
 	const place = useRef<Place | null>(null)
-	const messagesRef = useRef<HTMLDivElement | null>(null)
-	const messageInput = useRef<HTMLInputElement | null>(null)
 	
 	const [name, setName] = useState('')
-	const [message, setMessage] = useState('')
 	const [messages, setMessages] = useState<Message[]>([])
 	const [user, setUser] = useState<User | null>(null)
 	const [users, setUsers] = useState<User[]>([])
@@ -60,10 +62,6 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 		setName(event.target.value)
 	}, [setName])
 	
-	const onMessageInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-		setMessage(event.target.value)
-	}, [setMessage])
-	
 	const onNameSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 		
@@ -76,22 +74,6 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 		if (document.activeElement instanceof HTMLInputElement)
 			document.activeElement.blur()
 	}, [place, name, update])
-	
-	const onMessageSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault()
-		
-		if (!place.current)
-			return
-		
-		setMessage('')
-		setMessages(messages => [
-			...messages,
-			place.current.sendMessage(message)
-		])
-		
-		if (document.activeElement instanceof HTMLInputElement)
-			document.activeElement.blur()
-	}, [place, message])
 	
 	const onLocationSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
@@ -140,21 +122,6 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 		update()
 	}, [place, update])
 	
-	const onKeyDown = useCallback((event: KeyboardEvent) => {
-		if (document.activeElement instanceof HTMLInputElement) {
-			if (event.key === 'Escape')
-				document.activeElement.blur()
-			
-			return
-		}
-		
-		if (!(messageInput.current && event.key.toLowerCase() === 't'))
-			return
-		
-		event.preventDefault()
-		messageInput.current.focus()
-	}, [messageInput])
-	
 	useEffect(() => {
 		if (!canvas || place.current || (withInitialCoordinates && !(x && y)))
 			return
@@ -192,11 +159,6 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 	useEffect(() => {
 		place.current?.changeBounds()
 	}, [place, size])
-	
-	useEffect(() => {
-		if (messagesRef.current)
-			messagesRef.current.scrollTop = messagesRef.current.scrollHeight
-	}, [messagesRef, messages])
 	
 	useEffect(() => {
 		document.addEventListener('keydown', onKeyDown)
@@ -293,41 +255,11 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 					color={place.current?.color ?? '#000000'}
 					setColor={setColor}
 				/>
-				<div className={styles.chat}>
-					<div className={styles.messages} ref={messagesRef}>
-						{messages.map((message, i) => (
-							<p
-								key={i}
-								className={cx(styles.message, {
-									[styles.logMessage]: message.type !== 'user'
-								})}
-								style={{
-									color: message.type === 'user'
-										? message.color
-										: undefined
-								}}
-							>
-								{message.type === 'user'
-									? <><b>{message.name}:</b> {message.body}</>
-									: <><b>{message.name}</b> {message.type === 'join' ? 'joined' : 'left'}</>
-								}
-							</p>
-						))}
-					</div>
-					<form className={styles.messageForm} onSubmit={onMessageSubmit}>
-						<input
-							className={styles.messageInput}
-							ref={messageInput}
-							required
-							placeholder="type 't' to chat"
-							value={message}
-							onChange={onMessageInputChange}
-						/>
-						<button className={styles.messageSubmit} disabled={!message}>
-							send
-						</button>
-					</form>
-				</div>
+				<Chat
+					place={place.current}
+					messages={messages}
+					setMessages={setMessages}
+				/>
 			</nav>
 			{size && <canvas className={styles.canvas} ref={setCanvas} {...size} />}
 			{user && <Cursor user={user} location={bounds.lower} />}

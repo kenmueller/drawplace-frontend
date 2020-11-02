@@ -1,6 +1,8 @@
+@use 'colors';
+
 .root {
 	overflow: hidden !important;
-	background: #292d3e !important;
+	background: colors.$dark !important;
 	border-radius: 8px !important;
 	
 	> :last-child {
