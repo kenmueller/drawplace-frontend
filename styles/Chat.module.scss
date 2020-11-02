@@ -1,5 +1,7 @@
 @use 'colors';
 
+$horizontal-padding: 10px;
+
 .root {
 	align-self: flex-start;
 	display: flex;
@@ -14,7 +16,6 @@
 }
 
 .messages {
-	$horizontal-padding: 10px;
 	$vertical-padding: 12px;
 	$scrollbar-width: 2px;
 	
@@ -35,19 +36,27 @@
 	}
 }
 
-.messageForm {
+.form {
 	display: flex;
 	height: 30px;
+	margin: 0 $horizontal-padding $horizontal-padding;
+	overflow: hidden;
+	border-radius: 8px;
 }
 
-.messageInput {
+.input {
 	flex-grow: 1;
 	padding: 0 8px;
 	font-size: 14px;
-	background: white;
+	color: white;
+	background: transparentize(white, 0.8);
+	
+	&::placeholder {
+		color: transparentize(white, 0.5);
+	}
 }
 
-.messageSubmit {
+.submit {
 	padding: 0 8px;
 	font-size: 14px;
 	font-weight: 900;

@@ -41,6 +41,10 @@
 	font-size: 14px;
 	color: white;
 	background: transparentize(white, 0.8);
+	
+	&::placeholder {
+		color: transparentize(white, 0.5);
+	}
 }
 
 .nameSubmit {
@@ -125,6 +129,10 @@
 	color: white;
 	background: transparentize(white, 0.9);
 	-moz-appearance: textfield;
+	
+	&::placeholder {
+		color: transparentize(white, 0.5);
+	}
 	
 	&::-webkit-outer-spin-button,
 	&::-webkit-inner-spin-button {

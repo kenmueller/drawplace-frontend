@@ -65,16 +65,16 @@ const Chat = ({ place, messages, setMessages }: ChatProps) => {
 					<MessageRow key={i} messages={messages} message={message} i={i} />
 				)}
 			</div>
-			<form className={styles.messageForm} onSubmit={onSubmit}>
+			<form className={styles.form} onSubmit={onSubmit}>
 				<input
-					className={styles.messageInput}
+					className={styles.input}
 					ref={input}
 					required
 					placeholder="type 't' to chat"
 					value={message}
 					onChange={onChange}
 				/>
-				<button className={styles.messageSubmit} disabled={!message}>
+				<button className={styles.submit} disabled={!message}>
 					send
 				</button>
 			</form>
