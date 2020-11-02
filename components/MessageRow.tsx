@@ -36,15 +36,14 @@ const MessageRow = ({ messages, message, i }: MessageProps) => {
 	const showsName = shouldShowName(messages, message, i)
 	
 	return (
-		<div
-			className={cx(styles.root, styles.user, {
-				[styles.showsName]: showsName,
-				[styles.self]: message.fromSelf
-			})}
-			style={{ color: message.color }}
-		>
+		<div className={cx(styles.root, styles.user, {
+			[styles.showsName]: showsName,
+			[styles.self]: message.fromSelf
+		})}>
 			{showsName && <p className={styles.name}>{message.name}</p>}
-			<p className={styles.body}>{message.body}</p>
+			<p className={styles.body} style={{ color: message.color }}>
+				{message.body}
+			</p>
 		</div>
 	)
 }
