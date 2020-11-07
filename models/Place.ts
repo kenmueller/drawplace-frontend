@@ -31,6 +31,7 @@ export default class Place {
 	private user: User = getInitialUser()
 	private chunks: Chunk[] = []
 	private movement: Coordinate = getZeroCoordinate()
+	private keys: Set<string> = new Set()
 	
 	private onMouseDown?: MouseEventCallback
 	private onMouseMove?: MouseEventCallback
@@ -221,9 +222,17 @@ export default class Place {
 	}
 	
 	private modifyMovement = (key: string, down: boolean) => {
+		key = key.toLowerCase()
+		
+		if (
+			document.activeElement instanceof HTMLInputElement ||
+			(down ? this.keys.has(key) : !this.keys.has(key))
+		)
+			return
+		
 		const delta = down ? SPEED : -SPEED
 		
-		switch (key.toLowerCase()) {
+		switch (key) {
 			case 'w':
 				this.movement.y -= delta
 				break
@@ -236,24 +245,24 @@ export default class Place {
 			case 'd':
 				this.movement.x += delta
 				break
+			default:
+				return // Prevent unexpected key being added/removed to this.keys
 		}
+		
+		down
+			? this.keys.add(key)
+			: this.keys.delete(key)
 	}
 	
 	private addMovementEventListeners = () => {
 		document.addEventListener(
 			'keydown',
-			this.onKeyDown = ({ repeat, key }) =>
-				repeat ||
-				document.activeElement instanceof HTMLInputElement ||
-				this.modifyMovement(key, true)
+			this.onKeyDown = ({ key }) => this.modifyMovement(key, true)
 		)
 		
 		document.addEventListener(
 			'keyup',
-			this.onKeyUp = ({ repeat, key }) =>
-				repeat ||
-				document.activeElement instanceof HTMLInputElement ||
-				this.modifyMovement(key, false)
+			this.onKeyUp = ({ key }) => this.modifyMovement(key, false)
 		)
 		
 		requestAnimationFrame(this.onMovementTick)
