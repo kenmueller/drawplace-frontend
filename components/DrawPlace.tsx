@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect, ChangeEvent, FormEvent } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import useDelayedUnmount from 'use-delayed-unmount'
 import copy from 'copy-to-clipboard'
 import { toast } from 'react-toastify'
 import { Svg } from 'react-optimized-image'
@@ -21,6 +22,7 @@ import icon from 'images/icon.svg'
 import { src as share } from 'images/share.png'
 
 import styles from 'styles/DrawPlace.module.scss'
+import Toast from './Toast'
 
 const onKeyDown = (event: KeyboardEvent) => {
 	if (document.activeElement instanceof HTMLInputElement && event.key === 'Escape')
@@ -48,6 +50,8 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 	const [locationX, setLocationX] = useState('0')
 	const [locationY, setLocationY] = useState('0')
 	const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+	
+	const [[isLoading, isStoppingLoading], setIsLoading] = useDelayedUnmount(true, 150)
 	
 	const update = useUpdate()
 	const size = useWindowSize()
@@ -154,7 +158,9 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 			if (!(Number.isNaN(location.x) || Number.isNaN(location.y)))
 				place.current.setInitialLocation(location)
 		}
-	}, [canvas, place, withInitialCoordinates, x, y, setName, setMessages, setUser, setUsers, setLocationX, setLocationY, update])
+		
+		place.current.setIsLoading = setIsLoading
+	}, [canvas, place, withInitialCoordinates, x, y, setName, setMessages, setUser, setUsers, setLocationX, setLocationY, setIsLoading, update])
 	
 	useEffect(() => {
 		place.current?.changeBounds()
@@ -267,6 +273,7 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 			{users.map(user => (
 				<Cursor key={user.id} user={user} location={bounds.lower} bounds={bounds} />
 			))}
+			{isLoading && <Toast hiding={isStoppingLoading}>Loading...</Toast>}
 		</>
 	)
 }

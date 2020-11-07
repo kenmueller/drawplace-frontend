@@ -18,6 +18,7 @@ export default class Place {
 	setUser?(user: User): void
 	setUsers?(users: User[]): void
 	setLocation?(location: Coordinate): void
+	setIsLoading?(isLoading: boolean): void
 	
 	location: Coordinate = getZeroCoordinate()
 	bounds: Bounds
@@ -58,6 +59,7 @@ export default class Place {
 		this.io.on('chunk', (chunk: Chunk) => {
 			this.chunks.push(chunk)
 			this.drawChunk(chunk)
+			this.setIsLoading?.(false)
 		})
 		
 		this.io.on('line', (chunkId: string, line: Line) => {

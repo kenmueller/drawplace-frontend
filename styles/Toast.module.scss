@@ -1,0 +1,25 @@
+@use 'colors';
+
+.root {
+	$margin: 30px;
+	
+	position: absolute;
+	right: $margin;
+	bottom: $margin;
+	padding: 16px 24px;
+	font-weight: 900;
+	color: white;
+	background: colors.$dark;
+	border-radius: 8px;
+	box-shadow:
+		0 0 2px transparentize(black, 0.7),
+		0 4px 8px transparentize(black, 0.7);
+}
+
+.hiding {
+	animation: hide 150ms ease-in;
+}
+
+@keyframes hide {
+	to { transform: translateY(100px); }
+}
