@@ -56,7 +56,7 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 	const update = useUpdate()
 	const size = useWindowSize()
 	
-	const url = `https://draw.place${x && y && `/${x}/${y}`}`
+	const url = `https://draw.place${x && y ? `/${x}/${y}` : ''}`
 	const bounds: Bounds = place.current?.bounds ?? {
 		lower: getZeroCoordinate(),
 		upper: getZeroCoordinate()
