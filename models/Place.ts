@@ -1,4 +1,4 @@
-import IO from 'socket.io-client'
+import { Socket, io } from 'socket.io-client'
 
 import User, { getInitialUser } from './User'
 import Line, { getChunkIdForLine } from './Line'
@@ -24,7 +24,7 @@ export default class Place {
 	bounds: Bounds
 	
 	private context: CanvasRenderingContext2D
-	private io?: SocketIOClient.Socket
+	private io?: Socket
 	private isDrawing: boolean = false
 	private didLoadMessages: boolean = false
 	private pendingJoinMessage?: JoinMessage
@@ -42,7 +42,7 @@ export default class Place {
 	
 	constructor(private canvas: HTMLCanvasElement) {
 		this.context = canvas.getContext('2d')
-		this.io = IO(process.env.NEXT_PUBLIC_API_BASE_URL)
+		this.io = io(process.env.NEXT_PUBLIC_API_BASE_URL)
 		
 		this.bounds = this.getBounds()
 		this.emitBounds()
