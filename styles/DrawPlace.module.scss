@@ -29,21 +29,31 @@ $spacing: var(--spacing);
 	height: 30px;
 }
 
-.title {
+.titleContainer {
 	flex-shrink: 0;
 	display: none;
 	margin-left: 8px;
-	font-weight: 900;
-	color: colors.$pink;
-	transform: translateY(-2px);
 	
-	@media (min-width: 1500px) {
+	@media (min-width: 1450px) {
 		display: block;
 	}
 }
 
+.title {
+	margin-top: -6px;
+	font-weight: 900;
+	color: colors.$pink;
+}
+
 .titleEmphasized {
 	color: colors.$blue;
+}
+
+.subtitle {
+	margin: -2px 0 -4px;
+	font-size: 14px;
+	font-weight: 900;
+	color: white;
 }
 
 .nameForm {

@@ -193,10 +193,13 @@ const DrawPlace = ({ withInitialCoordinates = false }: DrawPlaceProps) => {
 			</Head>
 			<nav className={styles.navbar}>
 				<Svg className={styles.icon} src={icon} />
-				<h1 className={styles.title}>
-					draw
-					<span className={styles.titleEmphasized}>place</span>
-				</h1>
+				<div className={styles.titleContainer}>
+					<h1 className={styles.title}>
+						draw
+						<span className={styles.titleEmphasized}>place</span>
+					</h1>
+					<p className={styles.subtitle}>for allie</p>
+				</div>
 				<form className={styles.nameForm} onSubmit={onNameSubmit}>
 					<input
 						className={styles.nameInput}
